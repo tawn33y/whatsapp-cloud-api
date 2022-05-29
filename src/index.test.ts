@@ -37,6 +37,9 @@ describe('send messages', () => {
     },
   } = process;
 
+  // eslint-disable-next-line
+  console.log(fromPhoneNumberId, accessToken, version, to)
+
   const bot = createBot(fromPhoneNumberId, accessToken, version);
 
   test('sends text', async () => {

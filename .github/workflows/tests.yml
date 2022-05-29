@@ -27,3 +27,7 @@ jobs:
           npm t
         env:
           CI: true
+          FROM_PHONE_NUMBER_ID: ${{ secrets.FROM_PHONE_NUMBER_ID }}
+          ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+          VERSION: ${{ secrets.VERSION }}
+          TO: ${{ secrets.TO }}

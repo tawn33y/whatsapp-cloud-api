@@ -48,7 +48,9 @@
     "cloud api",
     "whatsapp cloud api",
     "whatsapp business",
-    "whatsapp business api"
+    "whatsapp business api",
+    "bot",
+    "whatsapp-bot"
   ],
   "author": "Tony <tawn33y@gmail.com>",
   "license": "GPL-3.0",

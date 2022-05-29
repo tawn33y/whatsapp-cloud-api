@@ -7,6 +7,8 @@
 
 `whatsapp-cloud-api` is an unofficial library for creating bots and sending/receiving messages using the Whatsapp Cloud API.
 
+Contains built-in Typescript declarations.
+
 ## Install
 
 ```bash

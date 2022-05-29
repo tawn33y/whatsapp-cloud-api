@@ -1,3 +1,6 @@
-import { log } from './utils/log';
+import 'dotenv/config';
+import { sendMessages } from './sendMessages';
 
-log.info('Hello world');
+export const createBot = (fromPhoneNumberId: string, accessToken: string, version: string = 'v14.0') => ({
+  ...sendMessages(fromPhoneNumberId, accessToken, version),
+});

@@ -16,7 +16,7 @@ interface ContactName {
   prefix?: string;
 }
 
-interface Contact {
+export interface Contact {
   addresses?: {
     street?: string;
     city?: string;
@@ -26,7 +26,7 @@ interface Contact {
     country_code?: string;
     type?: 'HOME' | 'WORK';
   }[];
-  birthday: string; // YYYY-MM-DD
+  birthday?: string; // YYYY-MM-DD
   emails?: {
     email?: string;
     type: 'HOME' | 'WORK';
@@ -44,7 +44,7 @@ interface Contact {
     type?: 'CELL' | 'MAIN' | 'IPHONE' | 'HOME' | 'WORK';
     wa_id?: string;
   }[];
-  urls: {
+  urls?: {
     url?: string;
     type?: 'HOME' | 'WORK';
   }[];
@@ -70,28 +70,30 @@ interface HeaderDocument {
   document: Media;
 }
 
-interface InteractiveBase {
+export interface InteractiveBase {
   body: {
     text: string;
   };
-  footer: {
+  footer?: {
     text: string;
   };
-  header: HeaderText | HeaderVideo | HeaderImage | HeaderDocument;
+  header?: HeaderText | HeaderVideo | HeaderImage | HeaderDocument;
 }
 
-interface InteractiveReplyButton {
+export interface InteractiveReplyButton {
   type: 'button';
   action: {
     buttons: {
       type: 'reply';
-      title: string;
-      id: string;
-    };
+      reply: {
+        title: string;
+        id: string;
+      };
+    }[];
   };
 }
 
-interface InteractiveListMessage {
+export interface InteractiveListMessage {
   type: 'list';
   action: {
     button: string;
@@ -108,27 +110,27 @@ interface InteractiveListMessage {
 
 type Interactive = InteractiveBase & (InteractiveReplyButton | InteractiveListMessage);
 
-interface Location {
+export interface Location {
   longitude: number;
   latitude: number;
   name?: string;
   address?: string;
 }
 
-interface MediaWithId {
+export interface MediaWithId {
   id: string;
 }
 
-interface MediaWithLink {
+export interface MediaWithLink {
   link: string; // http/https
 }
 
-interface MediaBase {
+export interface MediaBase {
   caption?: string;
   filename?: string;
 }
 
-type Media = MediaBase & (MediaWithId | MediaWithLink);
+export type Media = MediaBase & (MediaWithId | MediaWithLink);
 
 interface ParameterText {
   type: 'text';
@@ -201,7 +203,7 @@ type TemplateComponentTypeButton = TemplateComponentTypeButtonBase & (
   TemplateComponentTypeButtonQuickReply | TemplateComponentTypeButtonUrl
 );
 
-interface Template {
+export interface Template {
   name: string;
   language: {
     policy?: 'deterministic';
@@ -212,7 +214,7 @@ interface Template {
   )[];
 }
 
-interface Text {
+export interface Text {
   body: string;
   preview_url?: boolean;
 }
@@ -222,7 +224,7 @@ export interface AudioMessage extends Message {
   audio: Media;
 }
 
-export interface ContactsMessage extends Message {
+export interface ContactMessage extends Message {
   type: 'contacts';
   contacts: Contact[];
 }
@@ -266,3 +268,6 @@ export interface VideoMessage extends Message {
   type: 'video';
   video: Media;
 }
+
+export type MediaMessage = AudioMessage | DocumentMessage | ImageMessage |
+StickerMessage | VideoMessage;

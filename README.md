@@ -1,14 +1,14 @@
 # whatsapp-cloud-api
 
+`whatsapp-cloud-api` is a Node.js library for creating bots and sending/receiving messages using the [Whatsapp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/).
+
+Contains built-in Typescript declarations.
+
 [![run tests, lint, build](https://github.com/tawn33y/whatsapp-cloud-api/actions/workflows/tests.yml/badge.svg)](https://github.com/tawn33y/whatsapp-cloud-api/actions/workflows/tests.yml)
 [![npm publish](https://github.com/tawn33y/whatsapp-cloud-api/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/tawn33y/whatsapp-cloud-api/actions/workflows/npm-publish.yml)
 ![npm](https://img.shields.io/npm/v/whatsapp-cloud-api)
 ![npm bundle size](https://img.shields.io/bundlephobia/min/whatsapp-cloud-api)
 ![npm](https://img.shields.io/npm/dw/whatsapp-cloud-api)
-
-`whatsapp-cloud-api` is a Node.js library for creating bots and sending/receiving messages using the [Whatsapp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/).
-
-Contains built-in Typescript declarations.
 
 ## Install
 

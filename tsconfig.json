@@ -1,0 +1,17 @@
+{
+  "extends": "@tsconfig/node12/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+
+    "skipLibCheck": false,
+    "removeComments": true,
+    "sourceMap": true,
+    "declaration": true
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -1,7 +1,10 @@
 # TODO
 
-- [ ] Clearly show full interface definition on hover
-- [ ] Restructure functions to remove boilerplate & make them more friendly
+- [ ] Add documentation: how to get started, get access token, etc
+- [ ] example/
+- [ ] tutorial.md
+- [ ] Add attribution
+- [ ] Opening PRs: templates, format, etc
 
-- [ ] Bot: receive & handle messages
-- [ ] comprehensive tests
+- [ ] fix: test sending stickers
+- [ ] Consider MIT license: https://www.exygy.com/blog/which-license-should-i-use-mit-vs-apache-vs-gpl

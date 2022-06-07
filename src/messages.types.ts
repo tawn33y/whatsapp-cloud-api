@@ -50,25 +50,28 @@ export interface Contact {
   }[];
 }
 
-interface HeaderText {
+interface InteractiveHeaderText {
   type: 'text';
   text: string;
 }
 
-interface HeaderVideo {
+interface InteractiveHeaderVideo {
   type: 'video';
   video: Media;
 }
 
-interface HeaderImage {
+interface InteractiveHeaderImage {
   type: 'image';
   image: Media;
 }
 
-interface HeaderDocument {
+interface InteractiveHeaderDocument {
   type: 'document';
   document: Media;
 }
+
+export type InteractiveHeader = InteractiveHeaderText | InteractiveHeaderVideo |
+InteractiveHeaderImage | InteractiveHeaderDocument;
 
 export interface InteractiveBase {
   body: {
@@ -77,7 +80,7 @@ export interface InteractiveBase {
   footer?: {
     text: string;
   };
-  header?: HeaderText | HeaderVideo | HeaderImage | HeaderDocument;
+  header?: InteractiveHeader;
 }
 
 export interface InteractiveReplyButton {
@@ -203,15 +206,16 @@ type TemplateComponentTypeButton = TemplateComponentTypeButtonBase & (
   TemplateComponentTypeButtonQuickReply | TemplateComponentTypeButtonUrl
 );
 
+export type TemplateComponent = TemplateComponentTypeHeader | TemplateComponentTypeBody |
+TemplateComponentTypeButton;
+
 export interface Template {
   name: string;
   language: {
     policy?: 'deterministic';
     code: string; // https://developers.facebook.com/docs/whatsapp/api/messages/message-templates#supported-languages
   };
-  components?: (
-    TemplateComponentTypeHeader | TemplateComponentTypeBody | TemplateComponentTypeButton
-  )[];
+  components?: TemplateComponent[];
 }
 
 export interface Text {

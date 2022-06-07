@@ -48,11 +48,11 @@ export const createBot = (fromPhoneNumberId: string, accessToken: string, versio
       type: 'document',
       document: getMediaPayload(urlOrObjectId, options),
     }),
-    sendAudio: (to, urlOrObjectId, options) => sendRequest<MediaMessage>({
+    sendAudio: (to, urlOrObjectId) => sendRequest<MediaMessage>({
       ...payloadBase,
       to,
       type: 'audio',
-      audio: getMediaPayload(urlOrObjectId, options),
+      audio: getMediaPayload(urlOrObjectId),
     }),
     sendVideo: (to, urlOrObjectId, options) => sendRequest<MediaMessage>({
       ...payloadBase,
@@ -60,11 +60,11 @@ export const createBot = (fromPhoneNumberId: string, accessToken: string, versio
       type: 'video',
       video: getMediaPayload(urlOrObjectId, options),
     }),
-    sendSticker: (to, urlOrObjectId, options) => sendRequest<MediaMessage>({
+    sendSticker: (to, urlOrObjectId) => sendRequest<MediaMessage>({
       ...payloadBase,
       to,
       type: 'sticker',
-      sticker: getMediaPayload(urlOrObjectId, options),
+      sticker: getMediaPayload(urlOrObjectId),
     }),
     sendLocation: (to, latitude, longitude, options) => sendRequest<LocationMessage>({
       ...payloadBase,

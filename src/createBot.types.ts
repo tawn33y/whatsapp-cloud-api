@@ -7,24 +7,16 @@ export interface ICreateBot {
   }) => Promise<SendMessageResult>;
   sendImage: (to: string, urlOrObjectId: string, options?: {
     caption?: string;
-    filename?: string;
   }) => Promise<SendMessageResult>;
   sendDocument: (to: string, urlOrObjectId: string, options?: {
     caption?: string;
     filename?: string;
   }) => Promise<SendMessageResult>;
-  sendAudio: (to: string, urlOrObjectId: string, options?: {
-    caption?: string;
-    filename?: string;
-  }) => Promise<SendMessageResult>;
+  sendAudio: (to: string, urlOrObjectId: string) => Promise<SendMessageResult>;
   sendVideo: (to: string, urlOrObjectId: string, options?: {
     caption?: string;
-    filename?: string;
   }) => Promise<SendMessageResult>;
-  sendSticker: (to: string, urlOrObjectId: string, options?: {
-    caption?: string;
-    filename?: string;
-  }) => Promise<SendMessageResult>;
+  sendSticker: (to: string, urlOrObjectId: string) => Promise<SendMessageResult>;
   sendLocation: (to: string, latitude: number, longitude: number, options?: {
     name?: string;
     address?: string;

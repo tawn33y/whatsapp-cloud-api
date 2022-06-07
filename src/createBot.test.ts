@@ -32,9 +32,41 @@ describe('send messages', () => {
   });
 
   test('sends image', async () => {
-    const result = await bot.sendImage(to, 'https://static.onecms.io/wp-content/uploads/sites/13/2015/04/05/featured.jpg', {
-      caption: 'Random image',
+    const result = await bot.sendImage(to, 'https://picsum.photos/200/300', {
+      caption: 'Random jpg',
     });
+
+    expectSendMessageResult(result);
+  });
+
+  test('sends document', async () => {
+    const result = await bot.sendDocument(to, 'http://www.africau.edu/images/default/sample.pdf', {
+      caption: 'Random pdf',
+      filename: 'myfile.pdf',
+    });
+
+    expectSendMessageResult(result);
+  });
+
+  test('sends audio', async () => {
+    const result = await bot.sendAudio(to, 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3');
+
+    expectSendMessageResult(result);
+  });
+
+  test('sends video', async () => {
+    const result = await bot.sendVideo(to, 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4', {
+      caption: 'Random mp4',
+    });
+
+    expectSendMessageResult(result);
+  });
+
+  // TODO: not working
+  // https://faq.whatsapp.com/general/how-to-create-stickers-for-whatsapp/?lang=en
+  // transparent 512x512 gif
+  test('sends sticker', async () => {
+    const result = await bot.sendSticker(to, 'https://i.gifer.com/ZXHC.gif');
 
     expectSendMessageResult(result);
   });

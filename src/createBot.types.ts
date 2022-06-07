@@ -1,7 +1,4 @@
-import {
-  Contact, InteractiveBase, InteractiveListMessage,
-  InteractiveReplyButton, Template,
-} from './messages.types';
+import { Contact, InteractiveHeader, TemplateComponent } from './messages.types';
 import { SendMessageResult } from './sendRequestHelper';
 
 export interface ICreateBot {
@@ -32,12 +29,38 @@ export interface ICreateBot {
     name?: string;
     address?: string;
   }) => Promise<SendMessageResult>;
-
-  // TODO: simplify below definitions even further
-  sendTemplate: (to: string, template: Template) => Promise<SendMessageResult>;
-  sendContacts: (to: string, contacts: Contact[]) => Promise<SendMessageResult>;
-  sendInteractive: (
+  sendTemplate: (
     to: string,
-    interactive: InteractiveBase & (InteractiveReplyButton | InteractiveListMessage),
+    name: string,
+    languageCode: string,
+    components?: TemplateComponent[],
+  ) => Promise<SendMessageResult>;
+  sendContacts: (to: string, contacts: Contact[]) => Promise<SendMessageResult>;
+  sendReplyButtons: (
+    to: string,
+    bodyText: string,
+    buttons: {
+      [id: string]: string;
+    },
+    options?: {
+      footerText: string;
+      header?: InteractiveHeader;
+    },
+  ) => Promise<SendMessageResult>;
+  sendList: (
+    to: string,
+    buttonName: string,
+    bodyText: string,
+    sections: {
+      [sectionTitle: string]: {
+        id: string;
+        title: string;
+        description?: string;
+      }[];
+    },
+    options: {
+      footerText: string,
+      header?: InteractiveHeader;
+    },
   ) => Promise<SendMessageResult>;
 }

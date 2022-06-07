@@ -48,12 +48,7 @@ describe('send messages', () => {
   });
 
   test('sends template', async () => {
-    const result = await bot.sendTemplate(to, {
-      name: 'hello_world',
-      language: {
-        code: 'en_us',
-      },
-    });
+    const result = await bot.sendTemplate(to, 'hello_world', 'en_us');
 
     expectSendMessageResult(result);
   });
@@ -77,89 +72,63 @@ describe('send messages', () => {
     expectSendMessageResult(result);
   });
 
-  test('sends interactive reply button', async () => {
-    const result = await bot.sendInteractive(to, {
-      body: {
-        text: 'Some random text',
+  test('sends reply button', async () => {
+    const result = await bot.sendReplyButtons(
+      to,
+      'Random body text',
+      {
+        random_id_1: 'Button 1',
+        random_id_2: 'Button 2',
       },
-      footer: {
-        text: 'Some random footer text',
+      {
+        footerText: 'Random footer text',
+        header: {
+          type: 'text',
+          text: 'Random header text',
+        },
       },
-      header: {
-        type: 'text',
-        text: 'Some random header text',
-      },
-      type: 'button',
-      action: {
-        buttons: [
-          {
-            type: 'reply',
-            reply: {
-              title: 'Button 1',
-              id: 'random_id_1',
-            },
-          },
-          {
-            type: 'reply',
-            reply: {
-              title: 'Button 2',
-              id: 'random_id_2',
-            },
-          },
-        ],
-      },
-    });
+    );
 
     expectSendMessageResult(result);
   });
 
-  test('sends interactive list', async () => {
-    const result = await bot.sendInteractive(to, {
-      body: {
-        text: 'Some random text',
-      },
-      footer: {
-        text: 'Some random footer text',
-      },
-      header: {
-        type: 'text',
-        text: 'Some random header text',
-      },
-      type: 'list',
-      action: {
-        button: 'Click me',
-        sections: [
+  test('sends list', async () => {
+    const result = await bot.sendList(
+      to,
+      'Click me',
+      'Random body text',
+      {
+        'Section 1': [
           {
-            title: 'Section 1',
-            rows: [
-              {
-                id: 'random_id_1',
-                title: 'Item 1',
-                description: 'Random description',
-              },
-              {
-                id: 'random_id_2',
-                title: 'Item 2',
-              },
-            ],
+            id: 'random_id_1',
+            title: 'Item 1',
+            description: 'Random description',
           },
           {
-            title: 'Section 2',
-            rows: [
-              {
-                id: 'random_id_3',
-                title: 'Item 3',
-              },
-              {
-                id: 'random_id_4',
-                title: 'Item 4',
-                description: 'Random description',
-              },
-            ],
+            id: 'random_id_2',
+            title: 'Item 2',
+          },
+        ],
+        'Section 2': [
+          {
+            id: 'random_id_3',
+            title: 'Item 3',
+          },
+          {
+            id: 'random_id_4',
+            title: 'Item 4',
+            description: 'Random description',
           },
         ],
       },
-    });
+      {
+        footerText: 'Random footer text',
+        header: {
+          type: 'text',
+          text: 'Random header text',
+        },
+      },
+    );
 
     expectSendMessageResult(result);
   });

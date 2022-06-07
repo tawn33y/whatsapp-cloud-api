@@ -77,11 +77,17 @@ export const createBot = (fromPhoneNumberId: string, accessToken: string, versio
         address: options?.address,
       },
     }),
-    sendTemplate: (to, template) => sendRequest<TemplateMessage>({
+    sendTemplate: (to, name, languageCode, components) => sendRequest<TemplateMessage>({
       ...payloadBase,
       to,
       type: 'template',
-      template,
+      template: {
+        name,
+        language: {
+          code: languageCode,
+        },
+        components,
+      },
     }),
     sendContacts: (to, contacts) => sendRequest<ContactMessage>({
       ...payloadBase,
@@ -89,11 +95,57 @@ export const createBot = (fromPhoneNumberId: string, accessToken: string, versio
       type: 'contacts',
       contacts,
     }),
-    sendInteractive: (to, interactive) => sendRequest<InteractiveMessage>({
+    sendReplyButtons: (to, bodyText, buttons, options) => sendRequest<InteractiveMessage>({
       ...payloadBase,
       to,
       type: 'interactive',
-      interactive,
+      interactive: {
+        body: {
+          text: bodyText,
+        },
+        ...(options?.footerText
+          ? {
+            footer: { text: options?.footerText },
+          }
+          : {}
+        ),
+        header: options?.header,
+        type: 'button',
+        action: {
+          buttons: Object.entries(buttons).map(([key, value]) => ({
+            type: 'reply',
+            reply: {
+              title: value,
+              id: key,
+            },
+          })),
+        },
+      },
+    }),
+    sendList: (to, buttonName, bodyText, sections, options) => sendRequest<InteractiveMessage>({
+      ...payloadBase,
+      to,
+      type: 'interactive',
+      interactive: {
+        body: {
+          text: bodyText,
+        },
+        ...(options?.footerText
+          ? {
+            footer: { text: options?.footerText },
+          }
+          : {}
+        ),
+        header: options?.header,
+        type: 'list',
+        action: {
+          button: buttonName,
+          sections: Object.entries(sections).map(([key, value]) => ({
+            title: key,
+            rows: value,
+          })),
+        },
+      },
     }),
   };
 };

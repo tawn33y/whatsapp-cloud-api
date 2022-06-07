@@ -2,29 +2,13 @@ import { createBot } from '.';
 
 const expectSendMessageResult = (result: any): void => {
   expect(result && typeof result === 'object').toBe(true);
-  expect(result).toHaveProperty('messaging_product');
-  expect(result).toHaveProperty('contacts');
-  expect(result).toHaveProperty('messages');
+  expect(result).toHaveProperty('messageId');
+  expect(result).toHaveProperty('phoneNumber');
+  expect(result).toHaveProperty('whatsappId');
 
-  expect(result.messaging_product).toBe('whatsapp');
-
-  expect(Array.isArray(result.contacts)).toBe(true);
-  expect(result.contacts.length > 0).toBe(true);
-  result.contacts.forEach((contact: any) => {
-    expect(contact && typeof contact === 'object').toBe(true);
-    expect(contact).toHaveProperty('input');
-    expect(contact).toHaveProperty('wa_id');
-    expect(typeof contact.input).toBe('string');
-    expect(typeof contact.wa_id).toBe('string');
-  });
-
-  expect(Array.isArray(result.messages)).toBe(true);
-  expect(result.messages.length > 0).toBe(true);
-  result.messages.forEach((message: any) => {
-    expect(message && typeof message === 'object').toBe(true);
-    expect(message).toHaveProperty('id');
-    expect(typeof message.id).toBe('string');
-  });
+  expect(typeof result.messageId).toBe('string');
+  expect(typeof result.phoneNumber).toBe('string');
+  expect(typeof result.whatsappId).toBe('string');
 };
 
 describe('send messages', () => {
@@ -37,15 +21,10 @@ describe('send messages', () => {
     },
   } = process;
 
-  // eslint-disable-next-line
-  console.log(fromPhoneNumberId, accessToken, version, to)
-
   const bot = createBot(fromPhoneNumberId, accessToken, version);
 
   test('sends text', async () => {
-    const result = await bot.sendText({
-      to,
-      body: 'Hello world',
+    const result = await bot.sendMessage(to, 'Hello world', {
       preview_url: true,
     });
 
@@ -53,52 +32,53 @@ describe('send messages', () => {
   });
 
   test('sends image', async () => {
-    const result = await bot.sendMedia({
-      to,
-      type: 'image',
+    const result = await bot.sendImage(to, 'https://static.onecms.io/wp-content/uploads/sites/13/2015/04/05/featured.jpg', {
       caption: 'Random image',
-      link: 'https://static.onecms.io/wp-content/uploads/sites/13/2015/04/05/featured.jpg',
     });
 
     expectSendMessageResult(result);
   });
 
   test('sends location', async () => {
-    const result = await bot.sendLocation({
-      to,
-      latitude: 40.7128,
-      longitude: -74.0060,
+    const result = await bot.sendLocation(to, 40.7128, -74.0060, {
       name: 'New York',
     });
 
     expectSendMessageResult(result);
   });
 
-  test('sends contacts', async () => {
-    const result = await bot.sendContacts({
-      to,
-      contacts: [{
-        name: {
-          formatted_name: 'John Doe',
-          first_name: 'John',
-        },
-        phones: [{
-          type: 'HOME',
-          phone: '0712345678',
-        }],
-        emails: [{
-          type: 'HOME',
-          email: 'random@random.com',
-        }],
-      }],
+  test('sends template', async () => {
+    const result = await bot.sendTemplate(to, {
+      name: 'hello_world',
+      language: {
+        code: 'en_us',
+      },
     });
 
     expectSendMessageResult(result);
   });
 
+  test('sends contacts', async () => {
+    const result = await bot.sendContacts(to, [{
+      name: {
+        formatted_name: 'John Doe',
+        first_name: 'John',
+      },
+      phones: [{
+        type: 'HOME',
+        phone: '0712345678',
+      }],
+      emails: [{
+        type: 'HOME',
+        email: 'random@random.com',
+      }],
+    }]);
+
+    expectSendMessageResult(result);
+  });
+
   test('sends interactive reply button', async () => {
-    const result = await bot.sendInteractive({
-      to,
+    const result = await bot.sendInteractive(to, {
       body: {
         text: 'Some random text',
       },
@@ -134,8 +114,7 @@ describe('send messages', () => {
   });
 
   test('sends interactive list', async () => {
-    const result = await bot.sendInteractive({
-      to,
+    const result = await bot.sendInteractive(to, {
       body: {
         text: 'Some random text',
       },
@@ -179,18 +158,6 @@ describe('send messages', () => {
             ],
           },
         ],
-      },
-    });
-
-    expectSendMessageResult(result);
-  });
-
-  test('sends template', async () => {
-    const result = await bot.sendTemplate({
-      to,
-      name: 'hello_world',
-      language: {
-        code: 'en_us',
       },
     });
 

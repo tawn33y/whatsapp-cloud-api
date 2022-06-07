@@ -11,7 +11,7 @@ const expectSendMessageResult = (result: any): void => {
   expect(typeof result.whatsappId).toBe('string');
 };
 
-describe('send messages', () => {
+describe('create bot', () => {
   const {
     env: {
       FROM_PHONE_NUMBER_ID: fromPhoneNumberId = '',

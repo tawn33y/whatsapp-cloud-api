@@ -1,12 +1,13 @@
 import isURL from 'validator/lib/isURL';
+import express from 'express';
 import { ICreateBot } from './createBot.types';
-// import { startServer } from './startServer';
 import {
   ContactMessage, InteractiveMessage, LocationMessage,
   MediaBase, MediaMessage, TemplateMessage,
   TextMessage,
 } from './messages.types';
 import { sendRequestHelper } from './sendRequestHelper';
+import { startExpressServer } from './startExpressServer';
 import { pubSub } from './utils/pubSub';
 
 interface PaylodBase {
@@ -20,10 +21,7 @@ const payloadBase: PaylodBase = {
 };
 
 export const createBot: ICreateBot = (fromPhoneNumberId, accessToken, opts) => {
-  if (!opts?.dontListenForMessages) {
-    // startServer(opts);
-  }
-
+  let app: express.Application | undefined;
   const sendRequest = sendRequestHelper(fromPhoneNumberId, accessToken, opts?.version);
 
   const getMediaPayload = (urlOrObjectId: string, options?: MediaBase) => ({
@@ -33,6 +31,13 @@ export const createBot: ICreateBot = (fromPhoneNumberId, accessToken, opts) => {
   });
 
   return {
+    startExpressServer: (options) => {
+      if (!app) {
+        app = startExpressServer(options);
+      }
+
+      return app;
+    },
     on: (event, cb) => {
       pubSub.subscribe(event, cb);
     },

@@ -2,15 +2,15 @@ import express from 'express';
 import { log } from './utils/log';
 import { pubSub, PubSubEvents } from './utils/pubSub';
 
-interface ServerOptions {
-  expressApp?: express.Application;
+export interface ServerOptions {
+  app?: express.Application;
   useMiddleware?: (app: express.Application) => void;
   port?: number;
   webhookVerifyToken?: string;
 }
 
-export const startServer = (options?: ServerOptions) => {
-  const app = options?.expressApp || express();
+export const startExpressServer = (options?: ServerOptions): express.Application => {
+  const app = options?.app || express();
 
   app.use(express.json());
 
@@ -56,6 +56,10 @@ export const startServer = (options?: ServerOptions) => {
     pubSub.publish(PubSubEvents.message as any, { msg, from });
   });
 
-  const port = options?.port || 3000;
-  app.listen(port, () => log.info(`🚀 Server running on port ${port}...`));
+  if (options?.port) {
+    const port = options.port || 3000;
+    app.listen(port, () => log.info(`🚀 Server running on port ${port}...`));
+  }
+
+  return app;
 };

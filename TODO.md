@@ -10,3 +10,4 @@
 - [ ] Consider MIT license: https://www.exygy.com/blog/which-license-should-i-use-mit-vs-apache-vs-gpl
 
 - [ ] Enable multi-process pubsub (e.g. use redis)
+- [ ] Add support for other types of servers, e.g. Nest.js, etc

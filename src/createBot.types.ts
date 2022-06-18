@@ -7,13 +7,14 @@ export type ICreateBot = (
   accessToken: string,
   options?: {
     version?: string;
-    expressApp?: express.Application;
+  },
+) => {
+  startExpressServer: (options?: {
+    app?: express.Application;
     useMiddleware?: (app: express.Application) => void;
     port?: number;
     webhookVerifyToken?: string;
-    dontListenForMessages?: boolean;
-  },
-) => {
+  }) => express.Application;
   on: (event: 'message', cb: (msg: string, from: string) => void) => void;
 
   sendMessage: (to: string, text: string, options?: {

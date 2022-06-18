@@ -166,6 +166,9 @@ describe('create bot', () => {
   });
 
   test('listen for new messages', () => {
-
+    bot.startExpressServer();
+    bot.on('message', (msg, from) => {
+      console.log('++', msg, from);
+    });
   });
 });

@@ -1,4 +1,5 @@
 import { createBot } from '.';
+import { log } from './utils/log';
 
 const expectSendMessageResult = (result: any): void => {
   expect(result && typeof result === 'object').toBe(true);
@@ -18,6 +19,7 @@ describe('create bot', () => {
       ACCESS_TOKEN: accessToken = '',
       VERSION: version = '',
       TO: to = '',
+      WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
     },
   } = process;
 
@@ -165,10 +167,15 @@ describe('create bot', () => {
     expectSendMessageResult(result);
   });
 
-  test('listen for new messages', () => {
-    bot.startExpressServer();
-    bot.on('message', (msg, from) => {
-      console.log('++', msg, from);
+  test.only('listen for new messages', async () => {
+    const { server } = await bot.startExpressServer({ webhookVerifyToken });
+    bot.on('message', ({ msg, from }) => {
+      log.info('++', msg, from);
+    });
+
+    if (!server) return;
+    server.close(() => {
+      log.info('Server closed');
     });
   });
 });

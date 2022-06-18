@@ -108,3 +108,5 @@ config/development.json
 config/production.json
 config/test.json
 src/config.json
+
+example/

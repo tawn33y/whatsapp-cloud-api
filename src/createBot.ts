@@ -1,5 +1,5 @@
 import isURL from 'validator/lib/isURL';
-import express from 'express';
+import PubSub from 'pubsub-js';
 import { ICreateBot } from './createBot.types';
 import {
   ContactMessage, InteractiveMessage, LocationMessage,
@@ -7,8 +7,7 @@ import {
   TextMessage,
 } from './messages.types';
 import { sendRequestHelper } from './sendRequestHelper';
-import { startExpressServer } from './startExpressServer';
-import { pubSub } from './utils/pubSub';
+import { ExpressServer, startExpressServer } from './startExpressServer';
 
 interface PaylodBase {
   messaging_product: 'whatsapp';
@@ -21,7 +20,7 @@ const payloadBase: PaylodBase = {
 };
 
 export const createBot: ICreateBot = (fromPhoneNumberId, accessToken, opts) => {
-  let app: express.Application | undefined;
+  let expressServer: ExpressServer;
   const sendRequest = sendRequestHelper(fromPhoneNumberId, accessToken, opts?.version);
 
   const getMediaPayload = (urlOrObjectId: string, options?: MediaBase) => ({
@@ -31,15 +30,15 @@ export const createBot: ICreateBot = (fromPhoneNumberId, accessToken, opts) => {
   });
 
   return {
-    startExpressServer: (options) => {
-      if (!app) {
-        app = startExpressServer(options);
+    startExpressServer: async (options) => {
+      if (!expressServer) {
+        expressServer = await startExpressServer(options);
       }
 
-      return app;
+      return expressServer;
     },
     on: (event, cb) => {
-      pubSub.subscribe(event, cb);
+      PubSub.subscribe(event, (_, data) => cb(data));
     },
 
     sendMessage: (to, text, options) => sendRequest<TextMessage>({

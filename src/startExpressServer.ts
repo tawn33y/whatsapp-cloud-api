@@ -1,15 +1,25 @@
-import express from 'express';
+import express, { Application } from 'express';
+import { Server } from 'http';
+import PubSub from 'pubsub-js';
 import { log } from './utils/log';
-import { pubSub, PubSubEvents } from './utils/pubSub';
+import { PubSubEvents } from './utils/pubSub';
 
 export interface ServerOptions {
-  app?: express.Application;
-  useMiddleware?: (app: express.Application) => void;
+  app?: Application;
+  useMiddleware?: (app: Application) => void;
   port?: number;
+  webhookPath?: string;
   webhookVerifyToken?: string;
 }
 
-export const startExpressServer = (options?: ServerOptions): express.Application => {
+export interface ExpressServer {
+  server?: Server;
+  app: Application;
+}
+
+export const startExpressServer = (
+  options?: ServerOptions,
+): Promise<ExpressServer> => new Promise((resolve) => {
   const app = options?.app || express();
 
   app.use(express.json());
@@ -18,8 +28,10 @@ export const startExpressServer = (options?: ServerOptions): express.Application
     options.useMiddleware(app);
   }
 
+  const webhookPath = options?.webhookPath || '/webhook/whatsapp';
+
   if (options?.webhookVerifyToken) {
-    app.get('/webhook/whatsapp', (req, res) => {
+    app.get(webhookPath, (req, res) => {
       if (!req.query) {
         res.sendStatus(403);
         return;
@@ -44,7 +56,7 @@ export const startExpressServer = (options?: ServerOptions): express.Application
     });
   }
 
-  app.post('/webhook/whatsapp', async (req, res) => {
+  app.post(webhookPath, async (req, res) => {
     if (!req.body.object || req.body.entry[0].changes[0].value.statuses) {
       res.sendStatus(404);
       return;
@@ -53,13 +65,18 @@ export const startExpressServer = (options?: ServerOptions): express.Application
     const msg = req.body.entry[0].changes[0].value.messages[0].text.body;
     const { from } = req.body.entry[0].changes[0].value.messages[0];
 
-    pubSub.publish(PubSubEvents.message as any, { msg, from });
+    PubSub.publish(PubSubEvents.message, { msg, from });
+    res.sendStatus(200);
   });
 
-  if (options?.port) {
-    const port = options.port || 3000;
-    app.listen(port, () => log.info(`🚀 Server running on port ${port}...`));
+  if (options?.app) {
+    resolve({ app });
+    return;
   }
 
-  return app;
-};
+  const port = options?.port || 3000;
+  const server = app.listen(port, () => {
+    log.info(`🚀 Server running on port ${port}...`);
+    resolve({ server, app });
+  });
+});

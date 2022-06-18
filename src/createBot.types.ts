@@ -1,4 +1,5 @@
-import express from 'express';
+import express, { Application } from 'express';
+import { Server } from 'http';
 import { Contact, InteractiveHeader, TemplateComponent } from './messages.types';
 import { SendMessageResult } from './sendRequestHelper';
 
@@ -13,9 +14,10 @@ export type ICreateBot = (
     app?: express.Application;
     useMiddleware?: (app: express.Application) => void;
     port?: number;
+    webhookPath?: string;
     webhookVerifyToken?: string;
-  }) => express.Application;
-  on: (event: 'message', cb: (msg: string, from: string) => void) => void;
+  }) => Promise<{ server?: Server; app: Application; }>;
+  on: (event: 'message', cb: (data: { msg: string, from: string }) => void) => void;
 
   sendMessage: (to: string, text: string, options?: {
     preview_url?: boolean;

@@ -41,7 +41,16 @@ export const sendRequestHelper = (
       phoneNumber: result.contacts?.[0]?.input,
       whatsappId: result.contacts?.[0]?.wa_id,
     };
-  } catch (err) {
-    throw (err as AxiosError)?.response?.data ?? (err as Error).message;
+  } catch (err: unknown) {
+    if ((err as any).response) {
+      throw (err as AxiosError)?.response?.data;
+    // } else if ((err as any).request) {
+    //   throw (err as AxiosError)?.request;
+    } else if (err instanceof Error) {
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
+      throw (err as Error).message;
+    } else {
+      throw err;
+    }
   }
 };

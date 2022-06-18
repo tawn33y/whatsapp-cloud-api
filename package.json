@@ -1,6 +1,6 @@
 {
   "name": "whatsapp-cloud-api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Node.js library for creating bots and sending/receiving messages using the Whatsapp Cloud API",
   "main": "dist/index.js",
   "scripts": {
@@ -8,9 +8,9 @@
     "build": "rm -rf dist && tsc",
     "lint": "eslint --ext .ts ./",
     "ts-check": "tsc --noEmit -p  .",
-    "test": "jest --testPathPattern=dist",
+    "test": "npm run build && jest --testPathPattern=dist",
     "pre-commit-message": "echo 'Please wait, running pre-commit checks...' && exit 0",
-    "pre-commit": "npm-run-all lint ts-check build test",
+    "pre-commit": "npm-run-all lint ts-check test",
     "prepare": "husky install"
   },
   "dependencies": {

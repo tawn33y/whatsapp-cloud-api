@@ -167,7 +167,7 @@ describe('create bot', () => {
     expectSendMessageResult(result);
   });
 
-  test.only('listen for new messages', async () => {
+  test('listen for new messages', async () => {
     const { server } = await bot.startExpressServer({ webhookVerifyToken });
     bot.on('message', ({ msg, from }) => {
       log.info('++', msg, from);

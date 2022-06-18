@@ -1,11 +1,13 @@
 import isURL from 'validator/lib/isURL';
 import { ICreateBot } from './createBot.types';
+// import { startServer } from './startServer';
 import {
   ContactMessage, InteractiveMessage, LocationMessage,
   MediaBase, MediaMessage, TemplateMessage,
   TextMessage,
 } from './messages.types';
 import { sendRequestHelper } from './sendRequestHelper';
+import { pubSub } from './utils/pubSub';
 
 interface PaylodBase {
   messaging_product: 'whatsapp';
@@ -17,8 +19,12 @@ const payloadBase: PaylodBase = {
   recipient_type: 'individual',
 };
 
-export const createBot = (fromPhoneNumberId: string, accessToken: string, version: string = 'v14.0'): ICreateBot => {
-  const sendRequest = sendRequestHelper(fromPhoneNumberId, accessToken, version);
+export const createBot: ICreateBot = (fromPhoneNumberId, accessToken, opts) => {
+  if (!opts?.dontListenForMessages) {
+    // startServer(opts);
+  }
+
+  const sendRequest = sendRequestHelper(fromPhoneNumberId, accessToken, opts?.version);
 
   const getMediaPayload = (urlOrObjectId: string, options?: MediaBase) => ({
     ...(isURL(urlOrObjectId) ? { link: urlOrObjectId } : { id: urlOrObjectId }),
@@ -27,6 +33,10 @@ export const createBot = (fromPhoneNumberId: string, accessToken: string, versio
   });
 
   return {
+    on: (event, cb) => {
+      pubSub.subscribe(event, cb);
+    },
+
     sendMessage: (to, text, options) => sendRequest<TextMessage>({
       ...payloadBase,
       to,

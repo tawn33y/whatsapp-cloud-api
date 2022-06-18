@@ -21,7 +21,7 @@ describe('create bot', () => {
     },
   } = process;
 
-  const bot = createBot(fromPhoneNumberId, accessToken, version);
+  const bot = createBot(fromPhoneNumberId, accessToken, { version });
 
   test('sends text', async () => {
     const result = await bot.sendMessage(to, 'Hello world', {
@@ -163,5 +163,9 @@ describe('create bot', () => {
     );
 
     expectSendMessageResult(result);
+  });
+
+  test('listen for new messages', () => {
+
   });
 });

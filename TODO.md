@@ -8,3 +8,5 @@
 
 - [ ] fix: test sending stickers
 - [ ] Consider MIT license: https://www.exygy.com/blog/which-license-should-i-use-mit-vs-apache-vs-gpl
+
+- [ ] Enable multi-process pubsub (e.g. use redis)

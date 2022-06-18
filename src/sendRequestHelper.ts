@@ -21,7 +21,7 @@ export interface SendMessageResult {
 export const sendRequestHelper = (
   fromPhoneNumberId: string,
   accessToken: string,
-  version: string,
+  version: string = 'v14.0',
 ) => async <T>(data: T): Promise<SendMessageResult> => {
   try {
     const { data: rawResult } = await axios({

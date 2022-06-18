@@ -1,7 +1,21 @@
+import express from 'express';
 import { Contact, InteractiveHeader, TemplateComponent } from './messages.types';
 import { SendMessageResult } from './sendRequestHelper';
 
-export interface ICreateBot {
+export type ICreateBot = (
+  fromPhoneNumberId: string,
+  accessToken: string,
+  options?: {
+    version?: string;
+    expressApp?: express.Application;
+    useMiddleware?: (app: express.Application) => void;
+    port?: number;
+    webhookVerifyToken?: string;
+    dontListenForMessages?: boolean;
+  },
+) => {
+  on: (event: 'message', cb: (msg: string, from: string) => void) => void;
+
   sendMessage: (to: string, text: string, options?: {
     preview_url?: boolean;
   }) => Promise<SendMessageResult>;
@@ -55,4 +69,4 @@ export interface ICreateBot {
       header?: InteractiveHeader;
     },
   ) => Promise<SendMessageResult>;
-}
+};

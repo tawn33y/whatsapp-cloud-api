@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.1.0
+
+Stable release. No changes.
+
 ## 0.1.0-beta
 
 Beta release. No changes.

@@ -31,3 +31,5 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           VERSION: ${{ secrets.VERSION }}
           TO: ${{ secrets.TO }}
+          WEBHOOK_VERIFY_TOKEN: ${{ secrets.WEBHOOK_VERIFY_TOKEN }}
+          WEBHOOK_PATH: ${{ secrets.WEBHOOK_PATH }}

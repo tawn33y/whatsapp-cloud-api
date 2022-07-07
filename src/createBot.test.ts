@@ -23,6 +23,7 @@ const {
     VERSION: version = '',
     TO: to = '',
     WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
+    WEBHOOK_PATH: webhookPath = '',
   },
 } = process;
 
@@ -181,7 +182,7 @@ describe('server functions', () => {
     ({ server, app } = await bot.startExpressServer({ webhookVerifyToken }));
   });
 
-  const closeServer = (): Promise<void> => new Promise((resolve) => {
+  afterAll((): Promise<void> => new Promise((resolve) => {
     if (!server) {
       resolve();
       return;
@@ -192,7 +193,7 @@ describe('server functions', () => {
       console.log('✔️ Server closed');
       resolve();
     });
-  });
+  }));
 
   test('invalid webhook token', async () => {
     const sendRequest = (path: string) => request(app)
@@ -201,40 +202,32 @@ describe('server functions', () => {
       .expect(200);
 
     const paths = [
-      '/webhook/whatsapp',
-      '/webhook/whatsapp?hub.mode=subscribe&hub.challenge=random',
-      '/webhook/whatsapp?hub.mode=subscribe&hub.verify_token=abcd',
-      '/webhook/whatsapp?hub.mode=sub&hub.verify_token=abcd&hub.challenge=random',
-      '/webhook/whatsapp?hub.mode=subscribe&hub.verify_token=abcd&hub.challenge=random',
+      webhookPath,
+      `${webhookPath}?hub.mode=subscribe&hub.challenge=random`,
+      `${webhookPath}?hub.mode=subscribe&hub.verify_token=abcd`,
+      `${webhookPath}?hub.mode=sub&hub.verify_token=abcd&hub.challenge=random`,
+      `${webhookPath}?hub.mode=subscribe&hub.verify_token=abcd&hub.challenge=random`,
     ];
 
     for (let i = 0; i < paths.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       await expect(sendRequest(paths[i])).rejects.toThrow();
     }
-
-    await closeServer();
   });
 
   test('verify webhook token', async () => {
-    try {
-      const challenge = 'random';
-      const { text } = await request(app)
-        .get(`/webhook/whatsapp?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
-        .send()
-        .expect(200);
+    const challenge = 'random';
+    const { text } = await request(app)
+      .get(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
+      .send()
+      .expect(200);
 
-      await closeServer();
-      expect(text).toBe(challenge);
-    } catch (err) {
-      await closeServer();
-      throw err;
-    }
+    expect(text).toBe(challenge);
   });
 
   test('send invalid body', async () => {
     const sendRequest = (data: FreeFormObject) => request(app)
-      .post('/webhook/whatsapp')
+      .post(webhookPath)
       .send(data)
       .expect(200);
 
@@ -250,8 +243,6 @@ describe('server functions', () => {
       // eslint-disable-next-line no-await-in-loop
       await expect(sendRequest(data[i])).rejects.toThrow();
     }
-
-    await closeServer();
   });
 
   // eslint-disable-next-line no-async-promise-executor
@@ -482,7 +473,6 @@ describe('server functions', () => {
       i += 1;
 
       if (i === payloads.length) {
-        await closeServer();
         resolve();
       }
     });
@@ -490,7 +480,7 @@ describe('server functions', () => {
     try {
       Object.values(payloads).map(async (payload) => {
         await request(app)
-          .post('/webhook/whatsapp')
+          .post(webhookPath)
           .send({
             object: 'abcd',
             entry: [{
@@ -504,7 +494,6 @@ describe('server functions', () => {
           .expect(200);
       });
     } catch (err) {
-      await closeServer();
       reject(err);
     }
   }));

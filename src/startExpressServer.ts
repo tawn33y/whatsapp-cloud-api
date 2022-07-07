@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import { Server } from 'http';
 import PubSub from 'pubsub-js';
+import { FreeFormObject } from './utils/misc';
 import { PubSubEvent, PubSubEvents } from './utils/pubSub';
 
 export interface ServerOptions {
@@ -57,8 +58,12 @@ export const startExpressServer = (
   }
 
   app.post(webhookPath, async (req, res) => {
-    if (!req.body.object || req.body.entry[0].changes[0].value.statuses) {
-      res.sendStatus(404);
+    if (!req.body.object || !req.body.entry?.[0]?.changes?.[0]?.value) {
+      res.sendStatus(400);
+      return;
+    }
+    if (req.body?.entry?.[0]?.changes?.[0]?.value?.statuses) {
+      res.sendStatus(202);
       return;
     }
 
@@ -70,18 +75,46 @@ export const startExpressServer = (
       ...rest
     } = req.body.entry[0].changes[0].value.messages[0];
 
+    let event: PubSubEvent | undefined;
+    let data: FreeFormObject | undefined;
+
     switch (type) {
       case 'text':
-        PubSub.publish(PubSubEvents.text, { from, msg: rest.text?.body });
+        event = PubSubEvents.text;
+        data = { msg: rest.text?.body };
         break;
+
+      case 'image':
+      case 'document':
+      case 'audio':
+      case 'video':
+      case 'sticker':
+      case 'location':
+      case 'contacts':
+        event = PubSubEvents[type as PubSubEvent];
+        data = rest[type];
+        break;
+
       case 'interactive':
+        event = rest.interactive.type;
+        data = {
+          ...(rest.interactive.list_reply || rest.interactive.button_reply),
+          context: rest.context,
+        };
         break;
 
       default:
-        PubSub.publish(PubSubEvents[type as PubSubEvent], { from, ...rest[type] });
         break;
-        // e.g.
-        // PubSub.publish(PubSubEvents.image, { from, ...rest.image });
+    }
+
+    if (event && data) {
+      ['message', event].forEach((e) => PubSub.publish(e, {
+        from,
+        id,
+        timestamp,
+        type: event,
+        data,
+      }));
     }
 
     res.sendStatus(200);

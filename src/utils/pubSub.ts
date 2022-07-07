@@ -1,4 +1,5 @@
 export enum PubSubEvents {
+  message = 'message',
   text = 'text',
   image = 'image',
   document = 'document',
@@ -9,7 +10,6 @@ export enum PubSubEvents {
   contacts = 'contacts',
   button_reply = 'button_reply',
   list_reply = 'list_reply',
-  all = '*',
 }
 
 export type PubSubEvent = keyof typeof PubSubEvents;

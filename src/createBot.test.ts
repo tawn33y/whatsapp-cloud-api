@@ -1,4 +1,9 @@
+import request from 'supertest';
+import { Server } from 'http';
+import { Application } from 'express';
 import { createBot } from '.';
+import { FreeFormObject } from './utils/misc';
+import { PubSubEvents } from './utils/pubSub';
 
 const expectSendMessageResult = (result: any): void => {
   expect(result && typeof result === 'object').toBe(true);
@@ -11,17 +16,17 @@ const expectSendMessageResult = (result: any): void => {
   expect(typeof result.whatsappId).toBe('string');
 };
 
-describe('create bot', () => {
-  const {
-    env: {
-      FROM_PHONE_NUMBER_ID: fromPhoneNumberId = '',
-      ACCESS_TOKEN: accessToken = '',
-      VERSION: version = '',
-      TO: to = '',
-      // WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
-    },
-  } = process;
+const {
+  env: {
+    FROM_PHONE_NUMBER_ID: fromPhoneNumberId = '',
+    ACCESS_TOKEN: accessToken = '',
+    VERSION: version = '',
+    TO: to = '',
+    WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
+  },
+} = process;
 
+describe('send functions', () => {
   const bot = createBot(fromPhoneNumberId, accessToken, { version });
 
   test('sends text', async () => {
@@ -165,18 +170,342 @@ describe('create bot', () => {
 
     expectSendMessageResult(result);
   });
+});
 
-  // test('listen for new messages', async () => {
-  //   const { server } = await bot.startExpressServer({ webhookVerifyToken });
-  //   bot.on('message', ({ msg, from }) => {
-  //     // eslint-disable-next-line
-  //     console.log('++', msg, from);
-  //   });
+describe('server functions', () => {
+  const bot = createBot(fromPhoneNumberId, accessToken, { version });
+  let server: Server | undefined;
+  let app: Application | undefined;
 
-  //   if (!server) return;
-  //   server.close(() => {
-  //     // eslint-disable-next-line
-  //     console.log('Server closed');
-  //   });
-  // });
+  beforeAll(async () => {
+    ({ server, app } = await bot.startExpressServer({ webhookVerifyToken }));
+  });
+
+  const closeServer = (): Promise<void> => new Promise((resolve) => {
+    if (!server) {
+      resolve();
+      return;
+    }
+
+    server.close(() => {
+      // eslint-disable-next-line
+      console.log('✔️ Server closed');
+      resolve();
+    });
+  });
+
+  test('invalid webhook token', async () => {
+    const sendRequest = (path: string) => request(app)
+      .get(path)
+      .send()
+      .expect(200);
+
+    const paths = [
+      '/webhook/whatsapp',
+      '/webhook/whatsapp?hub.mode=subscribe&hub.challenge=random',
+      '/webhook/whatsapp?hub.mode=subscribe&hub.verify_token=abcd',
+      '/webhook/whatsapp?hub.mode=sub&hub.verify_token=abcd&hub.challenge=random',
+      '/webhook/whatsapp?hub.mode=subscribe&hub.verify_token=abcd&hub.challenge=random',
+    ];
+
+    for (let i = 0; i < paths.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await expect(sendRequest(paths[i])).rejects.toThrow();
+    }
+
+    await closeServer();
+  });
+
+  test('verify webhook token', async () => {
+    try {
+      const challenge = 'random';
+      const { text } = await request(app)
+        .get(`/webhook/whatsapp?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
+        .send()
+        .expect(200);
+
+      await closeServer();
+      expect(text).toBe(challenge);
+    } catch (err) {
+      await closeServer();
+      throw err;
+    }
+  });
+
+  test('send invalid body', async () => {
+    const sendRequest = (data: FreeFormObject) => request(app)
+      .post('/webhook/whatsapp')
+      .send(data)
+      .expect(200);
+
+    const data = [
+      {},
+      { object: 'abcd' },
+      { entry: [] },
+      { object: 'abcd', entry: [{ changes: [] }] },
+      { object: 'abcd', entry: [{ changes: [{ value: { statuses: [] } }] }] },
+    ];
+
+    for (let i = 0; i < data.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      await expect(sendRequest(data[i])).rejects.toThrow();
+    }
+
+    await closeServer();
+  });
+
+  // eslint-disable-next-line no-async-promise-executor
+  test('listen for new messages', (): Promise<void> => new Promise(async (resolve, reject) => {
+    const payloads = [
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'text',
+        text: { body: 'Hello' },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'image',
+        image: {
+          mime_type: 'image/jpeg',
+          sha256: 'abcd=',
+          id: '1234',
+        },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'document',
+        document: {
+          caption: 'Random pdf',
+          filename: 'myfile.pdf',
+          mime_type: 'application/pdf',
+          sha256: 'abcd=',
+          id: '1234',
+        },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'audio',
+        audio: {
+          mime_type: 'audio/mpeg',
+          sha256: 'abcd=',
+          id: '1234',
+          voice: false,
+        },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'video',
+        video: {
+          mime_type: 'video/mp4',
+          sha256: 'abcd=',
+          id: '1234',
+        },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'sticker',
+        sticker: {
+          mime_type: 'image/webp',
+          sha256: 'abcd=',
+          id: '1234',
+        },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'location',
+        location: { latitude: 40.7128, longitude: -74.006, name: 'New York' },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'contacts',
+        contacts: [{
+          name: {
+            formatted_name: 'John Doe',
+            first_name: 'John',
+          },
+          phones: [{
+            type: 'HOME',
+            phone: '0712345678',
+          }],
+          emails: [{
+            type: 'HOME',
+            email: 'random@random.com',
+          }],
+        }],
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'interactive',
+        interactive: {
+          type: 'list_reply',
+          list_reply: {
+            id: 'random_id_1',
+            title: 'Item 1',
+            description: 'Random description',
+          },
+        },
+        context: {
+          from: '12345678',
+          id: 'wamid.abcd',
+        },
+      },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'interactive',
+        interactive: {
+          type: 'button_reply',
+          button_reply: {
+            id: 'random_id_1',
+            title: 'Button 1',
+          },
+        },
+        context: {
+          from: '12345678',
+          id: 'wamid.abcd',
+        },
+      },
+    ];
+
+    let i = 0;
+
+    // TODO: listen for each event, e.g. bot.on('text', ...)
+
+    bot.on('message', async (message) => {
+      expect(message && typeof message === 'object').toBe(true);
+      expect(message).toHaveProperty('from');
+      expect(message).toHaveProperty('id');
+      expect(message).toHaveProperty('timestamp');
+      expect(message).toHaveProperty('type');
+      expect(message).toHaveProperty('data');
+
+      expect(typeof message.from).toBe('string');
+      expect(typeof message.id).toBe('string');
+      expect(typeof message.timestamp).toBe('string');
+      expect(typeof message.type).toBe('string');
+      expect(Object.values(PubSubEvents)).toContain(message.type);
+      expect(typeof message.data === 'object').toBe(true);
+
+      const { data } = message;
+
+      switch (message.type) {
+        case 'text':
+          expect(data).toHaveProperty('msg');
+          expect(typeof data.msg).toBe('string');
+          break;
+
+        case 'image':
+        case 'document':
+        case 'audio':
+        case 'video':
+        case 'sticker':
+          expect(data).toHaveProperty('mime_type');
+          expect(data).toHaveProperty('sha256');
+          expect(data).toHaveProperty('id');
+
+          expect(typeof data.mime_type).toBe('string');
+          expect(typeof data.sha256).toBe('string');
+          expect(typeof data.id).toBe('string');
+          if (data.caption) {
+            expect(typeof data.caption).toBe('string');
+          }
+          if (data.filename) {
+            expect(typeof data.filename).toBe('string');
+          }
+          if (data.voice) {
+            expect(typeof data.voice).toBe('boolean');
+          }
+          break;
+
+        case 'location':
+          expect(data).toHaveProperty('latitude');
+          expect(data).toHaveProperty('longitude');
+
+          expect(typeof data.latitude).toBe('number');
+          expect(typeof data.longitude).toBe('number');
+          if (data.name) {
+            expect(typeof data.name).toBe('string');
+          }
+          if (data.address) {
+            expect(typeof data.address).toBe('string');
+          }
+          break;
+
+        case 'contacts':
+          expect(Array.isArray(data)).toBe(true);
+          data.forEach((item: FreeFormObject) => expect(typeof item === 'object').toBe(true));
+          break;
+
+        case 'list_reply':
+        case 'button_reply':
+          expect(data).toHaveProperty('id');
+          expect(data).toHaveProperty('title');
+          expect(data).toHaveProperty('context');
+
+          expect(typeof data.id).toBe('string');
+          expect(typeof data.title).toBe('string');
+          if (data.description) {
+            expect(typeof data.description).toBe('string');
+          }
+
+          expect(typeof data.context === 'object').toBe(true);
+          expect(data.context).toHaveProperty('from');
+          expect(data.context).toHaveProperty('id');
+
+          expect(typeof data.context.from).toBe('string');
+          expect(typeof data.context.id).toBe('string');
+          break;
+
+        default:
+          break;
+      }
+
+      i += 1;
+
+      if (i === payloads.length) {
+        await closeServer();
+        resolve();
+      }
+    });
+
+    try {
+      Object.values(payloads).map(async (payload) => {
+        await request(app)
+          .post('/webhook/whatsapp')
+          .send({
+            object: 'abcd',
+            entry: [{
+              changes: [{
+                value: {
+                  messages: [payload],
+                },
+              }],
+            }],
+          })
+          .expect(200);
+      });
+    } catch (err) {
+      await closeServer();
+      reject(err);
+    }
+  }));
 });

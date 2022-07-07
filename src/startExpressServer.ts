@@ -1,8 +1,7 @@
 import express, { Application } from 'express';
 import { Server } from 'http';
 import PubSub from 'pubsub-js';
-import { log } from './utils/log';
-import { PubSubEvents } from './utils/pubSub';
+import { PubSubEvent, PubSubEvents } from './utils/pubSub';
 
 export interface ServerOptions {
   app?: Application;
@@ -47,7 +46,8 @@ export const startExpressServer = (
       }
 
       if (mode === 'subscribe' && verifyToken === options.webhookVerifyToken) {
-        log.info('✔️ Webhook verified');
+        // eslint-disable-next-line
+        console.log('✔️ Webhook verified');
         res.status(200).send(challenge);
         return;
       }
@@ -62,10 +62,28 @@ export const startExpressServer = (
       return;
     }
 
-    const msg = req.body.entry[0].changes[0].value.messages[0].text.body;
-    const { from } = req.body.entry[0].changes[0].value.messages[0];
+    const {
+      from,
+      id,
+      timestamp,
+      type,
+      ...rest
+    } = req.body.entry[0].changes[0].value.messages[0];
 
-    PubSub.publish(PubSubEvents.message, { msg, from });
+    switch (type) {
+      case 'text':
+        PubSub.publish(PubSubEvents.text, { from, msg: rest.text?.body });
+        break;
+      case 'interactive':
+        break;
+
+      default:
+        PubSub.publish(PubSubEvents[type as PubSubEvent], { from, ...rest[type] });
+        break;
+        // e.g.
+        // PubSub.publish(PubSubEvents.image, { from, ...rest.image });
+    }
+
     res.sendStatus(200);
   });
 
@@ -76,7 +94,8 @@ export const startExpressServer = (
 
   const port = options?.port || 3000;
   const server = app.listen(port, () => {
-    log.info(`🚀 Server running on port ${port}...`);
+    // eslint-disable-next-line
+    console.log(`🚀 Server running on port ${port}...`);
     resolve({ server, app });
   });
 });

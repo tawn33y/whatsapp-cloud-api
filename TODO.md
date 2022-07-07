@@ -11,3 +11,5 @@
 
 - [ ] Enable multi-process pubsub (e.g. use redis)
 - [ ] Add support for other types of servers, e.g. Nest.js, etc
+
+- https://developers.facebook.com/tools/debug/accesstoken

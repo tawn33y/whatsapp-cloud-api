@@ -1,5 +1,4 @@
 import { createBot } from '.';
-import { log } from './utils/log';
 
 const expectSendMessageResult = (result: any): void => {
   expect(result && typeof result === 'object').toBe(true);
@@ -19,7 +18,7 @@ describe('create bot', () => {
       ACCESS_TOKEN: accessToken = '',
       VERSION: version = '',
       TO: to = '',
-      WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
+      // WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
     },
   } = process;
 
@@ -167,15 +166,17 @@ describe('create bot', () => {
     expectSendMessageResult(result);
   });
 
-  test('listen for new messages', async () => {
-    const { server } = await bot.startExpressServer({ webhookVerifyToken });
-    bot.on('message', ({ msg, from }) => {
-      log.info('++', msg, from);
-    });
+  // test('listen for new messages', async () => {
+  //   const { server } = await bot.startExpressServer({ webhookVerifyToken });
+  //   bot.on('message', ({ msg, from }) => {
+  //     // eslint-disable-next-line
+  //     console.log('++', msg, from);
+  //   });
 
-    if (!server) return;
-    server.close(() => {
-      log.info('Server closed');
-    });
-  });
+  //   if (!server) return;
+  //   server.close(() => {
+  //     // eslint-disable-next-line
+  //     console.log('Server closed');
+  //   });
+  // });
 });

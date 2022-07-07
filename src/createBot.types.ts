@@ -17,7 +17,8 @@ export type ICreateBot = (
     webhookPath?: string;
     webhookVerifyToken?: string;
   }) => Promise<{ server?: Server; app: Application; }>;
-  on: (event: 'message', cb: (data: { msg: string, from: string }) => void) => void;
+  // on: (event: 'message', cb: (data: { msg: string, from: string }) => void) => void;
+  on: (event: string, cb: (data: any) => void) => void;
 
   sendMessage: (to: string, text: string, options?: {
     preview_url?: boolean;

@@ -400,8 +400,8 @@ describe('server functions', () => {
 
       switch (message.type) {
         case 'text':
-          expect(data).toHaveProperty('msg');
-          expect(typeof data.msg).toBe('string');
+          expect(data).toHaveProperty('text');
+          expect(typeof data.text).toBe('string');
           break;
 
         case 'image':

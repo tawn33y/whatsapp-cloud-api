@@ -81,7 +81,7 @@ export const startExpressServer = (
     switch (type) {
       case 'text':
         event = PubSubEvents.text;
-        data = { msg: rest.text?.body };
+        data = { text: rest.text?.body };
         break;
 
       case 'image':

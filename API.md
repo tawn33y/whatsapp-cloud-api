@@ -14,6 +14,8 @@
   - [sendContacts(to, contacts)](#send_contacts)
   - [sendReplyButtons(to, bodyText, buttons, [options])](#send_reply_buttons)
   - [sendList(to, buttonName, bodyText, sections, [options])](#send_list)
+  - [startExpressServer([options])](#start_express_server)
+  - [on(event, cb: (message) => void)](#on_event)
 
 ## Details
 
@@ -148,6 +150,38 @@
 | [options] | `Object` | | |
 | [options.footerText] | `Object` | | The footer content. Emojis, markdown, and links are supported. Maximum length: 60 characters. |
 | [contacts.header] | `Array of Objects` | | See [Official Documentation](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages#header-object). |
+
+<a name="start_express_server"></a>
+
+### startExpressServer([options])
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [options] | `Object` | | |
+| [options.app] | `express.Application` | | Your existing express application. Not required. See [README](./README.md#2-handling-incoming-messages) for more info. |
+| [options.useMiddleware] | `function` | | A function that accepts middleware for your server. See [README](./README.md#2-handling-incoming-messages) for more info. |
+| [options.port] | `number` | | Port number for the express server, e.g. `3000`. |
+| [options.webhookPath] | `string` | | Endpoint for handling all whatsapp-related requests. See [README](./README.md#2-handling-incoming-messages) for more info. |
+| [options.webhookVerifyToken] | `string` | | Verification token to use in Facebook Developer app settings.See [README](./README.md#1-verifying-your-callback-url) for more info. |
+
+<a name="on_event"></a>
+
+### on(event, cb: (message) => void)
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| event | `string` | | `text` \| `image` \| `document` \| `audio` \| `video` \| `sticker` \| `location` \| `contacts` \| `button_reply` \| `list_reply`  |
+| message | `object` | | See below. |
+
+`message` object:
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| from | `string` | | Whatsapp ID/phone number of Sender. |
+| id | `string` | | ID of created message. |
+| timestamp | `string` | | Unix epoch of created message. |
+| type | `string` | | `text` \| `image` \| `document` \| `audio` \| `video` \| `sticker` \| `location` \| `contacts` \| `button_reply` \| `list_reply`  |
+| data | `object` | | Varies depending on the event. e.g for text, it will be `{ text: string; }` |
 
 ## Resources
 

@@ -1,11 +1,11 @@
 # Updating NPM Version
 
 - ** Create feature branch from staging (create mileston v1.0)
-- Update changelog
 - Update package.json
 - npm i
 - git commit -m ""
 - git push origin feature/xx
+- Update changelog
 - ** Open PR to staging & merge (This closes #1, delete source branch)
 - git checkout staging
 - git fetch && git pull

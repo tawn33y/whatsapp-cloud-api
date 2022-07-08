@@ -1,7 +1,32 @@
+import express, { Application } from 'express';
+import { Server } from 'http';
 import { Contact, InteractiveHeader, TemplateComponent } from './messages.types';
 import { SendMessageResult } from './sendRequestHelper';
+import { FreeFormObject } from './utils/misc';
+import { PubSubEvent } from './utils/pubSub';
 
-export interface ICreateBot {
+export type ICreateBot = (
+  fromPhoneNumberId: string,
+  accessToken: string,
+  options?: {
+    version?: string;
+  },
+) => {
+  startExpressServer: (options?: {
+    app?: express.Application;
+    useMiddleware?: (app: express.Application) => void;
+    port?: number;
+    webhookPath?: string;
+    webhookVerifyToken?: string;
+  }) => Promise<{ server?: Server; app: Application; }>;
+  on: (event: PubSubEvent, cb: (message: {
+    from: string;
+    id: string;
+    timestamp: string;
+    type: PubSubEvent;
+    data: FreeFormObject; // TODO: properly define interfaces for each type
+  }) => void) => void;
+
   sendMessage: (to: string, text: string, options?: {
     preview_url?: boolean;
   }) => Promise<SendMessageResult>;
@@ -55,4 +80,4 @@ export interface ICreateBot {
       header?: InteractiveHeader;
     },
   ) => Promise<SendMessageResult>;
-}
+};

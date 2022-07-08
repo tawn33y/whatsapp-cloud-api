@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.2.0
+
+Added functionality to receive messages:
+
+- on(event, cb: (message) => void)
+- startExpressServer([options])
+
 ## 0.1.0
 
 Stable release. No changes.

@@ -12,5 +12,6 @@
 - [ ] Better documentation for data in `bot.on(...)` & update docs
 - [ ] Enable multi-process pubsub (e.g. use redis)
 - [ ] Add support for other types of servers, e.g. Nest.js, etc
+- [ ] Reduce bundle size: eliminate unnecessary packages
 
 - https://developers.facebook.com/tools/debug/accesstoken

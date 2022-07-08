@@ -15,3 +15,4 @@
 - git tag -a v1.0 -m "v1.0"
 - ** Confirm all OK: git log
 - git push origin staging main --tags
+- ** Create a new release: https://github.com/tawn33y/whatsapp-cloud-api/releases

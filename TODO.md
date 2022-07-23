@@ -8,6 +8,11 @@
 
 - [ ] example/
 - [ ] Opening PRs: templates, format, etc
+  - Create feature branch from staging (create mileston v1.0)
+  - npm i
+  - git commit -m ""
+  - git push origin feature/xx
+  - Open PR to staging & merge (This closes #1, delete source branch)
 - [ ] fix: test sending stickers
 - [ ] Licenses: https://www.exygy.com/blog/which-license-should-i-use-mit-vs-apache-vs-gpl
 - [ ] Use validation & be more strict

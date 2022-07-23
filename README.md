@@ -31,7 +31,7 @@ import { createBot } from 'whatsapp-cloud-api';
 // or if using require:
 // const { createBot } = require('whatsapp-cloud-api');
 
-async function whatsappBot() {
+(async () => {
   try {
     // replace the values below
     const from = 'YOUR_WHATSAPP_PHONE_NUMBER_ID';
@@ -66,9 +66,7 @@ async function whatsappBot() {
   } catch (err) {
     console.log(err);
   }
-}
-
-whatsappBot();
+})();
 ```
 
 ## Documentation

@@ -3,6 +3,7 @@
 ## List
 
 - [createBot(fromPhoneNumberId, accessToken, version)](#create_bot)
+  - [sendText(to, text, [options])](#send_text)
   - [sendMessage(to, text, [options])](#send_message)
   - [sendImage(to, urlOrObjectId, [options])](#send_image)
   - [sendDocument(to, urlOrObjectId, [options])](#send_document)
@@ -28,9 +29,22 @@
 | fromPhoneNumberId | `String` | | Whatsapp ID of business phone number. |
 | accessToken | `String` | | Temporary or Permanent access token. |
 
+<a name="send_text"></a>
+
+### sendText(to, text, [options])
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| to | `String` | | WhatsApp ID or phone number for the person you want to send a message to. |
+| text | `String` | | The text of the text message. |
+| [options] | `Object` | | |
+| [options.preview_url] | `Boolean` | | By default, WhatsApp recognizes URLs and makes them clickable, but you can also include a preview box with more information about the link. Set this field to true if you want to include a URL preview box. |
+
 <a name="send_message"></a>
 
 ### sendMessage(to, text, [options])
+
+Same as `sendText` above.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -186,4 +200,3 @@
 ## Resources
 
 - [Official WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages)
-- [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md)

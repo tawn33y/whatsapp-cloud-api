@@ -49,7 +49,8 @@ export const startExpressServer = (
       if (mode === 'subscribe' && verifyToken === options.webhookVerifyToken) {
         // eslint-disable-next-line
         console.log('✔️ Webhook verified');
-        res.status(200).send(challenge);
+        res.setHeader('content-type', 'text/plain');
+        res.send(challenge);
         return;
       }
 

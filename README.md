@@ -12,57 +12,87 @@ Contains built-in Typescript declarations.
 
 ## Install
 
+Using npm:
+
 ```bash
 npm i whatsapp-cloud-api
+```
+
+Using yarn:
+
+```bash
+yarn add whatsapp-cloud-api
 ```
 
 ## Usage
 
 ```js
 import { createBot } from 'whatsapp-cloud-api';
+// or if using require:
+// const { createBot } = require('whatsapp-cloud-api');
 
-// replace the values below
-const from = 'YOUR_WHATSAPP_BUSINESS_ACCOUNT_ID';
-const token = 'YOUR_TEMPORARY_OR_PERMANENT_ACCESS_TOKEN';
-const to = 'PHONE_NUMBER_OF_RECIPIENT';
-const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';
+async function whatsappBot() {
+  try {
+    // replace the values below
+    const from = 'YOUR_WHATSAPP_PHONE_NUMBER_ID';
+    const token = 'YOUR_TEMPORARY_OR_PERMANENT_ACCESS_TOKEN';
+    const to = 'PHONE_NUMBER_OF_RECIPIENT';
+    const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';
 
-// Create a bot that can send messages
-const bot = createBot(from, token);
+    // Create a bot that can send messages
+    const bot = createBot(from, token);
 
-// Send text message
-const result = await bot.sendMessage(to, 'Hello world');
+    // Send text message
+    const result = await bot.sendText(to, 'Hello world');
 
+    // Start express server to listen for incoming messages
+    // NOTE: See below under `Documentation/Tutorial` to learn how
+    // you can verify the webhook URL and make the server publicly available
+    await bot.startExpressServer({
+      webhookVerifyToken,
+    });
+
+    // Listen to ALL incoming messages
+    // NOTE: remember to always run: await bot.startExpressServer() first
+    bot.on('message', async (msg) => {
+      console.log(msg);
+
+      if (msg.type === 'text') {
+        await bot.sendText(msg.from, 'Received your text message!');
+      } else if (msg.type === 'image') {
+        await bot.sendText(msg.from, 'Received your image!');
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+whatsappBot();
+```
+
+## Documentation
+
+- [API Reference](./API.md).
+- [Tutorial](./TUTORIAL.md) for a step-by-step on how to get everything set up.
+
+## Examples
+
+Sending other message types ([read more in API reference](./API.md#api-reference)):
+
+```js
 // Send image
 const result = await bot.sendImage(to, 'https://picsum.photos/200/300', {
   caption: 'Random jpg',
 });
 
-// Start express server to listen for incoming messages
-// NOTE: Read below on 'Verifying your Callback URL' to understand how
-// to make the server publicly available
-await bot.startExpressServer({
-  webhookVerifyToken,
+// Send location
+const result = await bot.sendLocation(to, 40.7128, -74.0060, {
+  name: 'New York',
 });
 
-// Listen to incoming text messages ONLY
-// NOTE: you need to run: await bot.startExpressServer() first
-bot.on('text', async (msg) => {
-  console.log(msg);
-  await bot.sendMessage(msg.from, 'Received your text!');
-});
-
-// Listen to ALL incoming messages
-// NOTE: you need to run: await bot.startExpressServer() first
-bot.on('message', async (msg) => {
-  console.log(msg);
-
-  if (msg.type === 'text') {
-    await bot.sendMessage(msg.from, 'Received your text message!');
-  } else if (msg.type === 'image') {
-    await bot.sendMessage(msg.from, 'Received your image!');
-  }
-});
+// Send template
+const result = await bot.sendTemplate(to, 'hello_world', 'en_us');
 ```
 
 Customized express server ([read more below](#2-handling-incoming-messages)):
@@ -84,39 +114,40 @@ await bot.startExpressServer({
 });
 ```
 
-## Documentation
+Listening to other message types ([read more in API reference](./API.md#onevent-cb-message--void)):
 
-- [API Reference](./API.md)
+```js
+const bot = createBot(...);
+
+await bot.startExpressServer({ webhookVerifyToken });
+
+// Listen to incoming text messages ONLY
+bot.on('text', async (msg) => {
+  console.log(msg);
+  await bot.sendText(msg.from, 'Received your text!');
+});
+
+// Listen to incoming image messages ONLY
+bot.on('image', async (msg) => {
+  console.log(msg);
+  await bot.sendText(msg.from, 'Received your image!');
+});
+```
 
 ## Notes
 
-### 1. Verifying your Callback URL
+### 1. Verifying your Webhook URL
 
 By default, the endpoint for whatsapp-related requests will be: `/webhook/whatsapp`.
 This means that locally, your URL will be: `http://localhost/webhook/whatsapp`.
 
-You can use a reverse proxy to make the server publicly available. An example of this is [ngrok](https://ngrok.com/download). For the purposes of this explanation, we will use `ngrok` as our reverse proxy:
+You can use a reverse proxy to make the server publicly available. An example of this is [ngrok](https://ngrok.com/download). 
 
-- Download ngrok:  [https://ngrok.com/download](https://ngrok.com/download)
-- Follow the instuctions to set it up
-- Run it: `ngrok http 3000`. You should get a public URL, e.g. `https://1234.ngrok.io`
-- Start your app: `npm start`
-- Go to Facebook Developer app settings and under Whatsapp > Configuration, use the url received from ngrok: `https://1234.ngrok.io/webhook/whatsapp` and your verification token supplied above `const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';`
-- Finally, hit the Verify button to verify and save the webhook.
+You can [read more on the Tutorial](./TUTORIAL.md#3-setting-up-ngrok).
 
 ### 2. Handling incoming messages
 
 The implementation above creates an express server for you through which it listens to incoming messages. There may be plans to support other types of server in future (PRs are welcome! :)).
-
-You webhook URL will be as follows: `http://localhost/webhook/whatsapp`. Feel free to use [ngrok](https://ngrok.com/download) or any other reverse proxy to make the server publicly available, e.g. `https://1234.ngrok.io/webhook/whatsapp`.
-
-To verify your webhook, supply a token below and then click on Verify Callback URL in your Facebook Developer app settings. See more [instructions above](#1-verifying-your-callback-url):
-
-```js
-await bot.startExpressServer({
-  webhookVerifyToken: 'my-verification-token',
-});
-```
 
 You can change the port as follows:
 
@@ -215,7 +246,7 @@ WEBHOOK_VERIFY_TOKEN=""
 WEBHOOK_PATH=""
 ```
 
-### Notes
+### Attribution
 
 Library API inspired by [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md).
 

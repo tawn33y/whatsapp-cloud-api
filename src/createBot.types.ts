@@ -5,13 +5,15 @@ import { SendMessageResult } from './sendRequestHelper';
 import { FreeFormObject } from './utils/misc';
 import { PubSubEvent } from './utils/pubSub';
 
-export type ICreateBot = (
-  fromPhoneNumberId: string,
-  accessToken: string,
-  options?: {
-    version?: string;
-  },
-) => {
+export interface Message {
+  from: string;
+  id: string;
+  timestamp: string;
+  type: PubSubEvent;
+  data: FreeFormObject; // TODO: properly define interfaces for each type
+}
+
+export interface Bot {
   startExpressServer: (options?: {
     app?: express.Application;
     useMiddleware?: (app: express.Application) => void;
@@ -19,14 +21,11 @@ export type ICreateBot = (
     webhookPath?: string;
     webhookVerifyToken?: string;
   }) => Promise<{ server?: Server; app: Application; }>;
-  on: (event: PubSubEvent, cb: (message: {
-    from: string;
-    id: string;
-    timestamp: string;
-    type: PubSubEvent;
-    data: FreeFormObject; // TODO: properly define interfaces for each type
-  }) => void) => void;
+  on: (event: PubSubEvent, cb: (message: Message) => void) => void;
 
+  sendText: (to: string, text: string, options?: {
+    preview_url?: boolean;
+  }) => Promise<SendMessageResult>;
   sendMessage: (to: string, text: string, options?: {
     preview_url?: boolean;
   }) => Promise<SendMessageResult>;
@@ -57,10 +56,10 @@ export type ICreateBot = (
     to: string,
     bodyText: string,
     buttons: {
-      [id: string]: string;
+      [id: string]: string | number;
     },
     options?: {
-      footerText: string;
+      footerText?: string;
       header?: InteractiveHeader;
     },
   ) => Promise<SendMessageResult>;
@@ -70,14 +69,22 @@ export type ICreateBot = (
     bodyText: string,
     sections: {
       [sectionTitle: string]: {
-        id: string;
-        title: string;
+        id: string | number;
+        title: string | number;
         description?: string;
       }[];
     },
-    options: {
-      footerText: string,
+    options?: {
+      footerText?: string,
       header?: InteractiveHeader;
     },
   ) => Promise<SendMessageResult>;
-};
+}
+
+export type ICreateBot = (
+  fromPhoneNumberId: string,
+  accessToken: string,
+  options?: {
+    version?: string;
+  },
+) => Bot;

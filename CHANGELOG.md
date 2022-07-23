@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.2.1
+
+- Fix bugs; see [full list here](https://github.com/tawn33y/whatsapp-cloud-api/issues/14)
+- Add new function:
+  - sendText(to, text, [options])
+- Export `Bot` and `Message` interfaces
+- Add `Tutorial` & update documentation
+
 ## 0.2.0
 
 Added functionality to receive messages:

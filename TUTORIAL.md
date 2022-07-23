@@ -62,7 +62,7 @@ This 4-part tutorial should help you get started on using the library quickly.
 
       const bot = createBot(from, token);
 
-      const result = await bot.sendMessage(to, 'Hello world');
+      const result = await bot.sendText(to, 'Hello world');
 
       // Start express server to listen for incoming messages
       await bot.startExpressServer({
@@ -74,9 +74,9 @@ This 4-part tutorial should help you get started on using the library quickly.
         console.log(msg);
 
         if (msg.type === 'text') {
-          await bot.sendMessage(msg.from, 'Received your text message!');
+          await bot.sendText(msg.from, 'Received your text message!');
         } else if (msg.type === 'image') {
-          await bot.sendMessage(msg.from, 'Received your image!');
+          await bot.sendText(msg.from, 'Received your image!');
         }
       });
     } catch (err) {

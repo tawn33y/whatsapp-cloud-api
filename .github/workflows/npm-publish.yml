@@ -30,11 +30,11 @@ jobs:
         npm run build
         rm -r ./.github
         rm -r ./.husky
-        rm -r ./example
+        # rm -r ./example
         rm -r ./images
         rm -r ./node_modules
         rm -r ./src
-        rm ./.env
+        # rm ./.env
         rm ./.eslintignore
         rm ./.eslintrc.js
         rm ./.gitignore

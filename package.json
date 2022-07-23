@@ -1,6 +1,6 @@
 {
   "name": "whatsapp-cloud-api",
-  "version": "0.2.2",
+  "version": "0.2.4",
   "description": "Node.js library for creating bots and sending/receiving messages using the Whatsapp Cloud API",
   "main": "dist/index.js",
   "scripts": {

@@ -1,6 +1,6 @@
 # TODO
 
-- [ ] Reduce bundle size: eliminate unnecessary packages
+- [ ] README -> remove tags: minifiedSize; rearrange
 - [ ] sendMessage deprecate
 - [ ] create business account & add number
 - [ ] createBot.types.d.ts:2:38: Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`

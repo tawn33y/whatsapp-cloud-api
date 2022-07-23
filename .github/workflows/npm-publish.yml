@@ -29,9 +29,9 @@ jobs:
         npm ci
         npm run build
         rm -r ./.github
-        rm -r ./.husky
+        # rm -r ./.husky
         rm -r ./images
-        rm -r ./node_modules
+        # rm -r ./node_modules
         rm -r ./src
         rm ./.eslintignore
         rm ./.eslintrc.js

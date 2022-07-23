@@ -27,7 +27,6 @@ jobs:
     - name: npm publish
       run: |
         npm ci
-        npm un husky
         npm run build
         rm -r ./.github
         rm -r ./.husky

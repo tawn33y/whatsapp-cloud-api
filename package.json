@@ -11,7 +11,7 @@
     "test": "npm run build && jest --testPathPattern=dist",
     "pre-commit-message": "echo 'Please wait, running pre-commit checks...' && exit 0",
     "pre-commit": "npm-run-all lint ts-check test",
-    "prepare": "husky install"
+    "postinstall": "husky install"
   },
   "dependencies": {
     "axios": "^0.27.2",

@@ -27,9 +27,10 @@ jobs:
     - name: npm publish
       run: |
         npm ci
+        npm un husky
         npm run build
         rm -r ./.github
-        # rm -r ./.husky
+        rm -r ./.husky
         rm -r ./images
         rm -r ./node_modules
         rm -r ./src

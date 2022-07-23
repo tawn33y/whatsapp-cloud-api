@@ -14,4 +14,9 @@
 - [ ] Add support for other types of servers, e.g. Nest.js, etc
 - [ ] Reduce bundle size: eliminate unnecessary packages
 
+- [ ] Use validation & be more strict
+  - [ ] comprehensive tests: test errors & edge cases
+  - [ ] validate function args, e.g. use joi
+
 - https://developers.facebook.com/tools/debug/accesstoken
+- sendMessage deprecate

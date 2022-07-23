@@ -12,57 +12,80 @@ Contains built-in Typescript declarations.
 
 ## Install
 
+Using npm:
+
 ```bash
 npm i whatsapp-cloud-api
+```
+
+Using yarn:
+
+```bash
+yarn add whatsapp-cloud-api
 ```
 
 ## Usage
 
 ```js
 import { createBot } from 'whatsapp-cloud-api';
+// or if using require:
+// const { createBot } = require('whatsapp-cloud-api');
 
-// replace the values below
-const from = 'YOUR_WHATSAPP_BUSINESS_ACCOUNT_ID';
-const token = 'YOUR_TEMPORARY_OR_PERMANENT_ACCESS_TOKEN';
-const to = 'PHONE_NUMBER_OF_RECIPIENT';
-const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';
+async function whatsappBot() {
+  try {
+    // replace the values below
+    const from = 'YOUR_WHATSAPP_BUSINESS_ACCOUNT_ID';
+    const token = 'YOUR_TEMPORARY_OR_PERMANENT_ACCESS_TOKEN';
+    const to = 'PHONE_NUMBER_OF_RECIPIENT';
+    const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';
 
-// Create a bot that can send messages
-const bot = createBot(from, token);
+    // Create a bot that can send messages
+    const bot = createBot(from, token);
 
-// Send text message
-const result = await bot.sendMessage(to, 'Hello world');
+    // Send text message
+    const result = await bot.sendMessage(to, 'Hello world');
 
+    // Start express server to listen for incoming messages
+    // NOTE: Read below on 'Verifying your Callback URL' to understand how
+    // to make the server publicly available
+    await bot.startExpressServer({
+      webhookVerifyToken,
+    });
+
+    // Listen to ALL incoming messages
+    // NOTE: you need to run: await bot.startExpressServer() first
+    bot.on('message', async (msg) => {
+      console.log(msg);
+
+      if (msg.type === 'text') {
+        await bot.sendMessage(msg.from, 'Received your text message!');
+      } else if (msg.type === 'image') {
+        await bot.sendMessage(msg.from, 'Received your image!');
+      }
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+whatsappBot();
+```
+
+Sending other messages ([read more in API reference](./API.md#api-reference)):
+
+```js
 // Send image
 const result = await bot.sendImage(to, 'https://picsum.photos/200/300', {
   caption: 'Random jpg',
 });
 
-// Start express server to listen for incoming messages
-// NOTE: Read below on 'Verifying your Callback URL' to understand how
-// to make the server publicly available
-await bot.startExpressServer({
-  webhookVerifyToken,
+// Send location
+const result = await bot.sendLocation(to, 40.7128, -74.0060, {
+  name: 'New York',
 });
 
-// Listen to incoming text messages ONLY
-// NOTE: you need to run: await bot.startExpressServer() first
-bot.on('text', async (msg) => {
-  console.log(msg);
-  await bot.sendMessage(msg.from, 'Received your text!');
-});
-
-// Listen to ALL incoming messages
-// NOTE: you need to run: await bot.startExpressServer() first
-bot.on('message', async (msg) => {
-  console.log(msg);
-
-  if (msg.type === 'text') {
-    await bot.sendMessage(msg.from, 'Received your text message!');
-  } else if (msg.type === 'image') {
-    await bot.sendMessage(msg.from, 'Received your image!');
-  }
-});
+// Send template
+const result = await bot.sendTemplate(to, 'hello_world', 'en_us');
 ```
 
 Customized express server ([read more below](#2-handling-incoming-messages)):
@@ -84,6 +107,26 @@ await bot.startExpressServer({
 });
 ```
 
+Listening to other message types:
+
+```js
+const bot = createBot(...);
+
+await bot.startExpressServer({ webhookVerifyToken });
+
+// Listen to incoming text messages ONLY
+bot.on('text', async (msg) => {
+  console.log(msg);
+  await bot.sendMessage(msg.from, 'Received your text!');
+});
+
+// Listen to incoming image messages ONLY
+bot.on('image', async (msg) => {
+  console.log(msg);
+  await bot.sendMessage(msg.from, 'Received your image!');
+});
+```
+
 ## Documentation
 
 - [API Reference](./API.md)
@@ -97,7 +140,7 @@ This means that locally, your URL will be: `http://localhost/webhook/whatsapp`.
 
 You can use a reverse proxy to make the server publicly available. An example of this is [ngrok](https://ngrok.com/download). For the purposes of this explanation, we will use `ngrok` as our reverse proxy:
 
-- Download ngrok:  [https://ngrok.com/download](https://ngrok.com/download)
+- Download ngrok: [https://ngrok.com/download](https://ngrok.com/download)
 - Follow the instuctions to set it up
 - Run it: `ngrok http 3000`. You should get a public URL, e.g. `https://1234.ngrok.io`
 - Start your app: `npm start`

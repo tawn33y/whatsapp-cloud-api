@@ -31,6 +31,14 @@ describe('send functions', () => {
   const bot = createBot(fromPhoneNumberId, accessToken, { version });
 
   test('sends text', async () => {
+    const result = await bot.sendText(to, 'Hello world', {
+      preview_url: true,
+    });
+
+    expectSendMessageResult(result);
+  });
+
+  test('sends message', async () => {
     const result = await bot.sendMessage(to, 'Hello world', {
       preview_url: true,
     });

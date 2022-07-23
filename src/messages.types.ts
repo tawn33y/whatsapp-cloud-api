@@ -89,7 +89,7 @@ export interface InteractiveReplyButton {
     buttons: {
       type: 'reply';
       reply: {
-        title: string;
+        title: string | number;
         id: string;
       };
     }[];
@@ -103,8 +103,8 @@ export interface InteractiveListMessage {
     sections: {
       title: string;
       rows: {
-        id: string;
-        title: string;
+        id: string | number;
+        title: string | number;
         description?: string;
       }[];
     }[];

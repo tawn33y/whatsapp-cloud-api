@@ -34,7 +34,7 @@ import { createBot } from 'whatsapp-cloud-api';
 async function whatsappBot() {
   try {
     // replace the values below
-    const from = 'YOUR_WHATSAPP_BUSINESS_ACCOUNT_ID';
+    const from = 'YOUR_WHATSAPP_PHONE_NUMBER_ID';
     const token = 'YOUR_TEMPORARY_OR_PERMANENT_ACCESS_TOKEN';
     const to = 'PHONE_NUMBER_OF_RECIPIENT';
     const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';
@@ -46,8 +46,8 @@ async function whatsappBot() {
     const result = await bot.sendMessage(to, 'Hello world');
 
     // Start express server to listen for incoming messages
-    // NOTE: Read below on 'Verifying your Callback URL' to understand how
-    // to make the server publicly available
+    // NOTE: See below under `Documentation/Tutorial` to learn how
+    // you can verify the webhook URL and make the server publicly available
     await bot.startExpressServer({
       webhookVerifyToken,
     });
@@ -71,7 +71,14 @@ async function whatsappBot() {
 whatsappBot();
 ```
 
-Sending other messages ([read more in API reference](./API.md#api-reference)):
+## Documentation
+
+- [API Reference](./API.md)
+- [Tutorial](./TUTORIAL.md) for a step-by-step on how to get everything set up.
+
+## Examples
+
+Sending other message types ([read more in API reference](./API.md#api-reference)):
 
 ```js
 // Send image
@@ -107,7 +114,7 @@ await bot.startExpressServer({
 });
 ```
 
-Listening to other message types:
+Listening to other message types ([read more in API reference](./API.md#onevent-cb-message--void)):
 
 ```js
 const bot = createBot(...);
@@ -127,39 +134,20 @@ bot.on('image', async (msg) => {
 });
 ```
 
-## Documentation
-
-- [API Reference](./API.md)
-
 ## Notes
 
-### 1. Verifying your Callback URL
+### 1. Verifying your Webhook URL
 
 By default, the endpoint for whatsapp-related requests will be: `/webhook/whatsapp`.
 This means that locally, your URL will be: `http://localhost/webhook/whatsapp`.
 
-You can use a reverse proxy to make the server publicly available. An example of this is [ngrok](https://ngrok.com/download). For the purposes of this explanation, we will use `ngrok` as our reverse proxy:
+You can use a reverse proxy to make the server publicly available. An example of this is [ngrok](https://ngrok.com/download). 
 
-- Download ngrok: [https://ngrok.com/download](https://ngrok.com/download)
-- Follow the instuctions to set it up
-- Run it: `ngrok http 3000`. You should get a public URL, e.g. `https://1234.ngrok.io`
-- Start your app: `npm start`
-- Go to Facebook Developer app settings and under Whatsapp > Configuration, use the url received from ngrok: `https://1234.ngrok.io/webhook/whatsapp` and your verification token supplied above `const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';`
-- Finally, hit the Verify button to verify and save the webhook.
+You can [read more on the Tutorial](./TUTORIAL.md#3-setting-up-ngrok).
 
 ### 2. Handling incoming messages
 
 The implementation above creates an express server for you through which it listens to incoming messages. There may be plans to support other types of server in future (PRs are welcome! :)).
-
-You webhook URL will be as follows: `http://localhost/webhook/whatsapp`. Feel free to use [ngrok](https://ngrok.com/download) or any other reverse proxy to make the server publicly available, e.g. `https://1234.ngrok.io/webhook/whatsapp`.
-
-To verify your webhook, supply a token below and then click on Verify Callback URL in your Facebook Developer app settings. See more [instructions above](#1-verifying-your-callback-url):
-
-```js
-await bot.startExpressServer({
-  webhookVerifyToken: 'my-verification-token',
-});
-```
 
 You can change the port as follows:
 
@@ -258,7 +246,7 @@ WEBHOOK_VERIFY_TOKEN=""
 WEBHOOK_PATH=""
 ```
 
-### Notes
+### Attribution
 
 Library API inspired by [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md).
 

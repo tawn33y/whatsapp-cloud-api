@@ -200,4 +200,3 @@ Same as `sendText` above.
 ## Resources
 
 - [Official WhatsApp Cloud API](https://developers.facebook.com/docs/whatsapp/cloud-api/reference/messages)
-- [node-telegram-bot-api](https://github.com/yagop/node-telegram-bot-api/blob/release/doc/api.md)

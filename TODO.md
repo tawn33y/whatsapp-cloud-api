@@ -5,6 +5,7 @@
 - [ ] create business account & add number
 - [ ] createBot.types.d.ts:2:38: Try `npm i --save-dev @types/express` if it exists or add a new declaration (.d.ts) file containing `declare module 'express';`
 - [ ] Better documentation for data in `bot.on(...)` & update docs
+- [ ] Create localBuildTest.sh & run tests
 
 - [ ] example/
 - [ ] Opening PRs: templates, format, etc

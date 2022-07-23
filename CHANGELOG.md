@@ -1,10 +1,11 @@
 # CHANGELOG
 
-## 0.2.4
+## 0.2.5
 
 - Reduced bundle size by removing unnecessary files/folders from build.
-- Repaired broken package due to husky issues.
-- Unpublished v0.2.2...v0.2.3.
+- Repaired broken packages by fixing failing husky issues.
+- Unpublished v0.2.2...v0.2.5 (broken packages).
+- Add steps to do local package build & test it.
 
 ## 0.2.1
 

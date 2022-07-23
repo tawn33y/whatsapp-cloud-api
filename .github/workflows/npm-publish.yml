@@ -28,6 +28,21 @@ jobs:
       run: |
         npm ci
         npm run build
+        rm -r ./.github
+        rm -r ./.husky
+        rm -r ./example
+        rm -r ./images
+        rm -r ./node_modules
+        rm -r ./src
+        rm ./.env
+        rm ./.eslintignore
+        rm ./.eslintrc.js
+        rm ./.gitignore
+        find . -name \*.md -type f -delete
+        rm -r ./jest.config.js
+        rm -r ./nodemon.json
+        rm -r ./package-lock.json
+        rm -r ./tsconfig.json
         npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}
         npm publish
       env:

@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.2.2
+
+Reduced bundle size by removing unnecessary files/folders from build.
+
 ## 0.2.1
 
 - Fix bugs; see [full list here](https://github.com/tawn33y/whatsapp-cloud-api/issues/14)

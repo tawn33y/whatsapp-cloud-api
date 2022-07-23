@@ -36,11 +36,15 @@ jobs:
         rm ./.eslintignore
         rm ./.eslintrc.js
         rm ./.gitignore
-        find . -name \*.md -type f -delete
+        rm -r ./API.md
+        rm -r ./CHANGELOG.md
         rm -r ./jest.config.js
         rm -r ./nodemon.json
         rm -r ./package-lock.json
+        rm -r ./TODO.md
         rm -r ./tsconfig.json
+        rm -r ./TUTORIAL.md
+        rm -r ./Updating\ NPM\ Version.md
         npm config set //registry.npmjs.org/:_authToken=${{ secrets.NPM_AUTH_TOKEN }}
         npm publish
       env:

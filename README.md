@@ -73,7 +73,7 @@ whatsappBot();
 
 ## Documentation
 
-- [API Reference](./API.md)
+- [API Reference](./API.md).
 - [Tutorial](./TUTORIAL.md) for a step-by-step on how to get everything set up.
 
 ## Examples

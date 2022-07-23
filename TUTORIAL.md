@@ -8,25 +8,25 @@ This 4-part tutorial should help you get started on using the library quickly.
 
 - Go to [developers.facebook.com](https://developers.facebook.com/) and log in.
 
-- Click on `My Apps`:
+- Click on `My Apps`:<br>
 ![My Apps](./images/tutorial/my%20apps.png)
 
-- Click on `Create app`:
+- Click on `Create app`:<br>
 ![My Apps](./images/tutorial/create%20app.png)
 
-- Select app type as `Business`:
+- Select app type as `Business`:<br>
 ![My Apps](./images/tutorial/select%20app%20type.png)
 
-- Fill in basic info by inputting the display name & email address, and then click `Create app`:
+- Fill in basic info by inputting the display name & email address, and then click `Create app`:<br>
 ![My Apps](./images/tutorial/basic%20info.png)
 
-- On the app page, select whatsapp and click `Set up`:
+- On the app page, select whatsapp and click `Set up`:<br>
 ![My Apps](./images/tutorial/select%20whatsapp.png)
 
-- Select a business account or create one if you don't have. Click `Continue` to finish setting up:
+- Select a business account or create one if you don't have. Click `Continue` to finish setting up:<br>
 ![My Apps](./images/tutorial/select%20business%20account.png)
 
-- On the `Getting Started` page, copy the token and number ID as we will need them later:
+- On the `Getting Started` page, copy the token and number ID as we will need them later:<br>
 ![My Apps](./images/tutorial/copy%20token%20and%20number.png)
 
 ### (2) Setting up local project
@@ -118,12 +118,12 @@ You can use a reverse proxy to make the server publicly available. An example of
 - Download ngrok: [https://ngrok.com/download](https://ngrok.com/download).
 - Follow the instuctions to set it up.
 - Run it: `ngrok http 3000`. You should get a public URL, e.g. `https://1234.ngrok.io`.
-- Go to configuration and click on `Edit` webhook:
+- Go to configuration and click on `Edit` webhook:<br>
 ![My Apps](./images/tutorial/configuration.png)
 - Use the url received from ngrok: `https://1234.ngrok.io/webhook/whatsapp` and the verification token you provided above in the index.js file: `const webhookVerifyToken = 'YOUR_WEBHOOK_VERIFICATION_TOKEN';`.
-- Finally, hit the `Verify and save` button to verify and save the webhook:
+- Finally, hit the `Verify and save` button to verify and save the webhook:<br>
 ![My Apps](./images/tutorial/verify%20webhook.png)
-- Ensure you see following on the terminal:
+- Ensure you see following on the terminal:<br>
 ![My Apps](./images/tutorial/verified%20webhook.png)
 - Also ensure that the dialog for inputting the Callback URL/Verify token on the Facebook dashboard closes successfully (which means there is no error).
 
@@ -131,12 +131,12 @@ You can use a reverse proxy to make the server publicly available. An example of
 
 ### (4) Receiving messages
 
-- On the dashboard under `Configuration`, click on `Manage` under `Webhook fields` to add a subscription:
+- On the dashboard under `Configuration`, click on `Manage` under `Webhook fields` to add a subscription:<br>
 ![My Apps](./images/tutorial/manage%20webhook.png)
 
-- Click `Subscribe` next to the `messages` webhook to subscribe to new messages:
+- Click `Subscribe` next to the `messages` webhook to subscribe to new messages:<br>
 ![My Apps](./images/tutorial/subscribe.png)
-- Send a message from your whatsapp app on your device. Check your terminal to ensure you get a response as below:
+- Send a message from your whatsapp app on your device. Check your terminal to ensure you get a response as below:<br>
 ![My Apps](./images/tutorial/received%20message.png)
 
 **Congratulations, you have just received your first message via the whatsapp API!** 🎉
@@ -154,9 +154,9 @@ You can also use the [API Reference](./API.md) to view definitions of functions 
 By default, the access token expires after 24 hours. You can extend this to 2 months.
 
 - Go to [https://developers.facebook.com/tools/debug/accesstoken](https://developers.facebook.com/tools/debug/accesstoken).
-- Enter the token you copied and click `Debug`:
+- Enter the token you copied and click `Debug`:<br>
 ![My Apps](./images/tutorial/debug%20token.png)
-- Click `Extend Access Token` to extend it:
+- Click `Extend Access Token` to extend it:<br>
 ![My Apps](./images/tutorial/extend%20token.png)
 
 This should now extend the token by 2 months: 🎉

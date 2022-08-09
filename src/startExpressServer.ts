@@ -107,7 +107,9 @@ export const startExpressServer = (
         break;
     }
 
-    data!.context ??= rest.context;
+    if (rest.context) {
+      data!.context ??= rest.context;
+    }
 
     if (event && data) {
       ['message', event].forEach((e) => PubSub.publish(e, {

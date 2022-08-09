@@ -257,14 +257,20 @@ describe('server functions', () => {
   test('listen for new messages', (): Promise<void> => new Promise(async (resolve, reject) => {
     const payloads = [
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'text',
         text: { body: 'Hello' },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'image',
@@ -275,7 +281,10 @@ describe('server functions', () => {
         },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'document',
@@ -288,7 +297,10 @@ describe('server functions', () => {
         },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'audio',
@@ -300,7 +312,10 @@ describe('server functions', () => {
         },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'video',
@@ -311,7 +326,10 @@ describe('server functions', () => {
         },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'sticker',
@@ -322,14 +340,20 @@ describe('server functions', () => {
         },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'location',
         location: { latitude: 40.7128, longitude: -74.006, name: 'New York' },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'contacts',
@@ -349,7 +373,10 @@ describe('server functions', () => {
         }],
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'interactive',
@@ -367,7 +394,10 @@ describe('server functions', () => {
         },
       },
       {
-        from: '12345678',
+        from: {
+          wa_id: '12345678',
+          name: 'John Doe',
+        },
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'interactive',
@@ -397,7 +427,7 @@ describe('server functions', () => {
       expect(message).toHaveProperty('type');
       expect(message).toHaveProperty('data');
 
-      expect(typeof message.from).toBe('string');
+      expect(typeof message.from).toBe('object');
       expect(typeof message.id).toBe('string');
       expect(typeof message.timestamp).toBe('string');
       expect(typeof message.type).toBe('string');

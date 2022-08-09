@@ -111,9 +111,15 @@ export const startExpressServer = (
       data!.context ??= rest.context;
     }
 
+    const name = req.body.entry[0].changes[0].value.contacts?.length
+      ? req.body.entry[0].changes[0].value.contacts[0].profile.name : null;
+
     if (event && data) {
       ['message', event].forEach((e) => PubSub.publish(e, {
-        from,
+        from: {
+          wa_id: from,
+          name,
+        },
         id,
         timestamp,
         type: event,

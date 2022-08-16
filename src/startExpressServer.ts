@@ -100,12 +100,18 @@ export const startExpressServer = (
         event = rest.interactive.type;
         data = {
           ...(rest.interactive.list_reply || rest.interactive.button_reply),
-          context: rest.context,
         };
         break;
 
       default:
         break;
+    }
+
+    if (rest.context) {
+      data = {
+        ...data,
+        context: rest.context,
+      };
     }
 
     if (event && data) {

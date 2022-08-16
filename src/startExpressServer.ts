@@ -108,7 +108,10 @@ export const startExpressServer = (
     }
 
     if (rest.context) {
-      data!.context ??= rest.context;
+data = {
+  ...data,
+  context: rest.context,
+}
     }
 
     if (event && data) {

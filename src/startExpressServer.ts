@@ -109,7 +109,10 @@ export const startExpressServer = (
     }
 
     if (rest.context) {
-      data!.context ??= rest.context;
+      data = {
+        ...data,
+        context: rest.context,
+      };
     }
 
     const name = req.body.entry[0].changes[0].value.contacts?.length

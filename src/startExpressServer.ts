@@ -3,6 +3,7 @@ import { Server } from 'http';
 import PubSub from 'pubsub-js';
 import { FreeFormObject } from './utils/misc';
 import { PubSubEvent, PubSubEvents } from './utils/pubSub';
+import { Message } from './createBot.types';
 
 export interface ServerOptions {
   app?: Application;
@@ -48,7 +49,7 @@ export const startExpressServer = (
 
       if (mode === 'subscribe' && verifyToken === options.webhookVerifyToken) {
         // eslint-disable-next-line
-        console.log('✔️ Webhook verified');
+          console.log('✔️ Webhook verified');
         res.setHeader('content-type', 'text/plain');
         res.send(challenge);
         return;
@@ -114,14 +115,25 @@ export const startExpressServer = (
       };
     }
 
+    const name = req.body.entry[0].changes[0].value.contacts?.[0]?.profile?.name ?? undefined;
+
     if (event && data) {
-      ['message', event].forEach((e) => PubSub.publish(e, {
+      let payload: Message = {
         from,
         id,
         timestamp,
         type: event,
         data,
-      }));
+      };
+
+      if (name) {
+        payload = {
+          ...payload,
+          name,
+        };
+      }
+
+      ['message', event].forEach((e) => PubSub.publish(e, payload));
     }
 
     res.sendStatus(200);
@@ -135,7 +147,10 @@ export const startExpressServer = (
   const port = options?.port || 3000;
   const server = app.listen(port, () => {
     // eslint-disable-next-line
-    console.log(`🚀 Server running on port ${port}...`);
-    resolve({ server, app });
+      console.log(`🚀 Server running on port ${port}...`);
+    resolve({
+      server,
+      app,
+    });
   });
 });

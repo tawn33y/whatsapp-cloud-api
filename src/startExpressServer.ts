@@ -115,8 +115,7 @@ export const startExpressServer = (
       };
     }
 
-    const name = req.body.entry[0].changes[0].value.contacts?.length
-      ? req.body.entry[0].changes[0].value.contacts[0].profile.name : undefined;
+    const name = req.body.entry[0].changes[0].value.contacts?.[0]?.profile?.name ?? undefined;
 
     if (event && data) {
       let payload: Message = {

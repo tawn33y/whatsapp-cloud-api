@@ -413,9 +413,6 @@ describe('server functions', () => {
       expect(typeof message.type).toBe('string');
       expect(Object.values(PubSubEvents)).toContain(message.type);
 
-      // eslint-disable-next-line
-      console.log('++', message.name);
-
       if (message.name) {
         expect(typeof message.name).toBe('string');
       } else {

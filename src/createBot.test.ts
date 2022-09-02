@@ -396,12 +396,14 @@ describe('server functions', () => {
       expect(message).toHaveProperty('timestamp');
       expect(message).toHaveProperty('type');
       expect(message).toHaveProperty('data');
+      expect(message).toHaveProperty('name');
 
       expect(typeof message.from).toBe('string');
       expect(typeof message.id).toBe('string');
       expect(typeof message.timestamp).toBe('string');
       expect(typeof message.type).toBe('string');
       expect(Object.values(PubSubEvents)).toContain(message.type);
+      expect(typeof message.name).toBe('string');
       expect(typeof message.data === 'object').toBe(true);
 
       const { data } = message;

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 0.2.6
+
+- Adds sender `name`. Change added by [@guskuma](https://github.com/guskuma).
+  - PR [#28](https://github.com/tawn33y/whatsapp-cloud-api/pull/28)
+  - PR [#25](https://github.com/tawn33y/whatsapp-cloud-api/pull/25)
+- Capture message context always. Change added by [@guskuma](https://github.com/guskuma).
+  - PR [#24](https://github.com/tawn33y/whatsapp-cloud-api/pull/24)
+
 ## 0.2.5
 
 - Reduced bundle size by removing unnecessary files/folders from build.

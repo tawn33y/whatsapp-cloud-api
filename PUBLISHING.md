@@ -19,7 +19,9 @@ npm i ./$wca_build
 mkdir src
 touch src/index.js
 
-# update index.js/package.json & run: npm start
+# update index.js/package.json
+
+npm start
 
 cd ..
 rm -r ./playground
@@ -29,7 +31,7 @@ rm $wca_build
 ## Publish
 
 ```sh
-# Open PR; delete source branch
+# Create PR (check: delete source branch)
 
 git checkout staging
 git fetch && git pull

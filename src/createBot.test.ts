@@ -41,153 +41,225 @@ describe('send functions', () => {
   const bot = createBot(fromPhoneNumberId, accessToken, { version });
 
   test('sends text', async () => {
-    const result = await bot.sendText(to, 'Hello world', {
-      preview_url: true,
-    });
+    try {
+      const result = await bot.sendText(to, 'Hello world', {
+        preview_url: true,
+      });
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends message', async () => {
-    const result = await bot.sendMessage(to, 'Hello world', {
-      preview_url: true,
-    });
+    try {
+      const result = await bot.sendMessage(to, 'Hello world', {
+        preview_url: true,
+      });
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends image', async () => {
-    const result = await bot.sendImage(to, 'https://picsum.photos/200/300', {
-      caption: 'Random jpg',
-    });
+    try {
+      const result = await bot.sendImage(to, 'https://picsum.photos/200/300', {
+        caption: 'Random jpg',
+      });
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends document', async () => {
-    const result = await bot.sendDocument(to, 'http://www.africau.edu/images/default/sample.pdf', {
-      caption: 'Random pdf',
-      filename: 'myfile.pdf',
-    });
+    try {
+      const result = await bot.sendDocument(to, 'http://www.africau.edu/images/default/sample.pdf', {
+        caption: 'Random pdf',
+        filename: 'myfile.pdf',
+      });
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends audio', async () => {
-    const result = await bot.sendAudio(to, 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3');
+    try {
+      const result = await bot.sendAudio(to, 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3');
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends video', async () => {
-    const result = await bot.sendVideo(to, 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4', {
-      caption: 'Random mp4',
-    });
+    try {
+      const result = await bot.sendVideo(to, 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4', {
+        caption: 'Random mp4',
+      });
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   // TODO: not working
   // https://faq.whatsapp.com/general/how-to-create-stickers-for-whatsapp/?lang=en
   // transparent 512x512 gif
   test('sends sticker', async () => {
-    const result = await bot.sendSticker(to, 'https://i.gifer.com/ZXHC.gif');
+    try {
+      const result = await bot.sendSticker(to, 'https://i.gifer.com/ZXHC.gif');
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends location', async () => {
-    const result = await bot.sendLocation(to, 40.7128, -74.0060, {
-      name: 'New York',
-    });
+    try {
+      const result = await bot.sendLocation(to, 40.7128, -74.0060, {
+        name: 'New York',
+      });
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends template', async () => {
-    const result = await bot.sendTemplate(to, 'hello_world', 'en_us');
+    try {
+      const result = await bot.sendTemplate(to, 'hello_world', 'en_us');
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends contacts', async () => {
-    const result = await bot.sendContacts(to, [{
-      name: {
-        formatted_name: 'John Doe',
-        first_name: 'John',
-      },
-      phones: [{
-        type: 'HOME',
-        phone: '0712345678',
-      }],
-      emails: [{
-        type: 'HOME',
-        email: 'random@random.com',
-      }],
-    }]);
+    try {
+      const result = await bot.sendContacts(to, [{
+        name: {
+          formatted_name: 'John Doe',
+          first_name: 'John',
+        },
+        phones: [{
+          type: 'HOME',
+          phone: '0712345678',
+        }],
+        emails: [{
+          type: 'HOME',
+          email: 'random@random.com',
+        }],
+      }]);
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends reply button', async () => {
-    const result = await bot.sendReplyButtons(
-      to,
-      'Random body text',
-      {
-        random_id_1: 'Button 1',
-        random_id_2: 'Button 2',
-      },
-      {
-        footerText: 'Random footer text',
-        header: {
-          type: 'text',
-          text: 'Random header text',
+    try {
+      const result = await bot.sendReplyButtons(
+        to,
+        'Random body text',
+        {
+          random_id_1: 'Button 1',
+          random_id_2: 'Button 2',
         },
-      },
-    );
+        {
+          footerText: 'Random footer text',
+          header: {
+            type: 'text',
+            text: 'Random header text',
+          },
+        },
+      );
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('sends list', async () => {
-    const result = await bot.sendList(
-      to,
-      'Click me',
-      'Random body text',
-      {
-        'Section 1': [
-          {
-            id: 'random_id_1',
-            title: 'Item 1',
-            description: 'Random description',
-          },
-          {
-            id: 'random_id_2',
-            title: 'Item 2',
-          },
-        ],
-        'Section 2': [
-          {
-            id: 'random_id_3',
-            title: 'Item 3',
-          },
-          {
-            id: 'random_id_4',
-            title: 'Item 4',
-            description: 'Random description',
-          },
-        ],
-      },
-      {
-        footerText: 'Random footer text',
-        header: {
-          type: 'text',
-          text: 'Random header text',
+    try {
+      const result = await bot.sendList(
+        to,
+        'Click me',
+        'Random body text',
+        {
+          'Section 1': [
+            {
+              id: 'random_id_1',
+              title: 'Item 1',
+              description: 'Random description',
+            },
+            {
+              id: 'random_id_2',
+              title: 'Item 2',
+            },
+          ],
+          'Section 2': [
+            {
+              id: 'random_id_3',
+              title: 'Item 3',
+            },
+            {
+              id: 'random_id_4',
+              title: 'Item 4',
+              description: 'Random description',
+            },
+          ],
         },
-      },
-    );
+        {
+          footerText: 'Random footer text',
+          header: {
+            type: 'text',
+            text: 'Random header text',
+          },
+        },
+      );
 
-    expectSendMessageResult(result);
+      expectSendMessageResult(result);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 });
 
@@ -197,7 +269,13 @@ describe('server functions', () => {
   let app: Application | undefined;
 
   beforeAll(async () => {
-    ({ server, app } = await bot.startExpressServer({ webhookVerifyToken }));
+    try {
+      ({ server, app } = await bot.startExpressServer({ webhookVerifyToken }));
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   afterAll((): Promise<void> => new Promise((resolve) => {
@@ -228,19 +306,31 @@ describe('server functions', () => {
     ];
 
     for (let i = 0; i < paths.length; i += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await expect(sendRequest(paths[i])).rejects.toThrow();
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await expect(sendRequest(paths[i])).rejects.toThrow();
+      } catch (err) {
+        // eslint-disable-next-line
+        console.log(err);
+        throw err;
+      }
     }
   });
 
   test('verify webhook token', async () => {
-    const challenge = 'random';
-    const { text } = await request(app)
-      .get(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
-      .send()
-      .expect(200);
+    try {
+      const challenge = 'random';
+      const { text } = await request(app)
+        .get(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
+        .send()
+        .expect(200);
 
-    expect(text).toBe(challenge);
+      expect(text).toBe(challenge);
+    } catch (err) {
+      // eslint-disable-next-line
+      console.log(err);
+      throw err;
+    }
   });
 
   test('send invalid body', async () => {
@@ -258,8 +348,14 @@ describe('server functions', () => {
     ];
 
     for (let i = 0; i < data.length; i += 1) {
-      // eslint-disable-next-line no-await-in-loop
-      await expect(sendRequest(data[i])).rejects.toThrow();
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await expect(sendRequest(data[i])).rejects.toThrow();
+      } catch (err) {
+        // eslint-disable-next-line
+        console.log(err);
+        throw err;
+      }
     }
   });
 

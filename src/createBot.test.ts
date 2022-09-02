@@ -413,9 +413,14 @@ describe('server functions', () => {
       expect(typeof message.type).toBe('string');
       expect(Object.values(PubSubEvents)).toContain(message.type);
 
-      // if (message.name) {
-      expect(typeof message.name).toBe('string');
-      // }
+      // eslint-disable-next-line
+      console.log('++', message.name);
+
+      if (message.name) {
+        expect(typeof message.name).toBe('string');
+      } else {
+        expect(message.name === undefined).toBe(true);
+      }
 
       expect(typeof message.data === 'object').toBe(true);
       const { data } = message;

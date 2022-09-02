@@ -258,6 +258,7 @@ describe('server functions', () => {
     const payloads = [
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'text',
@@ -265,6 +266,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'image',
@@ -276,6 +278,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'document',
@@ -289,6 +292,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'audio',
@@ -301,6 +305,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'video',
@@ -312,6 +317,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'sticker',
@@ -323,6 +329,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'location',
@@ -330,6 +337,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'contacts',
@@ -350,6 +358,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'interactive',
@@ -368,6 +377,7 @@ describe('server functions', () => {
       },
       {
         from: '12345678',
+        name: 'John Doe',
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'interactive',

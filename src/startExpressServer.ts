@@ -120,11 +120,11 @@ export const startExpressServer = (
     if (event && data) {
       const payload: Message = {
         from,
+        name,
         id,
         timestamp,
         type: event,
         data,
-        name,
       };
 
       ['message', event].forEach((e) => PubSub.publish(e, payload));

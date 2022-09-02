@@ -16,6 +16,16 @@ const expectSendMessageResult = (result: any): void => {
   expect(typeof result.whatsappId).toBe('string');
 };
 
+/**
+ * Returns a random integer between min (inclusive) and max (inclusive).
+ * https://stackoverflow.com/a/1527820
+ */
+const getRandomInt = (_min: number, _max: number): number => {
+  const min = Math.ceil(_min);
+  const max = Math.floor(_max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
 const {
   env: {
     FROM_PHONE_NUMBER_ID: fromPhoneNumberId = '',
@@ -402,8 +412,14 @@ describe('server functions', () => {
       expect(typeof message.timestamp).toBe('string');
       expect(typeof message.type).toBe('string');
       expect(Object.values(PubSubEvents)).toContain(message.type);
-      expect(typeof message.data === 'object').toBe(true);
 
+      if (message.name) {
+        expect(typeof message.name).toBe('string');
+      } else {
+        expect(message.name === undefined).toBe(true);
+      }
+
+      expect(typeof message.data === 'object').toBe(true);
       const { data } = message;
 
       switch (message.type) {
@@ -495,6 +511,11 @@ describe('server functions', () => {
               changes: [{
                 value: {
                   messages: [payload],
+                  contacts: [{
+                    profile: {
+                      name: getRandomInt(0, 1) ? 'John Doe' : undefined,
+                    },
+                  }],
                 },
               }],
             }],

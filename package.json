@@ -5,13 +5,13 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "nodemon",
-    "build": "rm -rf dist && tsc",
-    "lint": "eslint --ext .ts ./",
-    "ts-check": "tsc --noEmit -p  .",
-    "test": "npm run build && jest --testPathPattern=dist",
+    "build": "gulp build",
+    "lint": "gulp lint",
+    "ts-check": "gulp compile",
+    "test": "jest --testPathPattern=test",
     "pre-commit-message": "echo 'Please wait, running pre-commit checks...' && exit 0",
-    "pre-commit": "npm-run-all lint ts-check test",
-    "prepare": "[ -d './.husky' ] && husky install"
+    "pre-commit": "gulp build",
+    "prepare": "husky install"
   },
   "files": [
     "dist",
@@ -29,17 +29,24 @@
   "devDependencies": {
     "@tsconfig/node12": "1.0.11",
     "@types/express": "4.17.13",
+    "@types/gulp": "4.0.9",
     "@types/jest": "28.1.4",
     "@types/node": "18.0.3",
     "@types/pubsub-js": "1.8.3",
     "@types/supertest": "2.0.12",
     "@types/validator": "13.7.4",
+    "@types/vinyl-paths": "0.0.31",
     "@typescript-eslint/eslint-plugin": "5.30.5",
     "@typescript-eslint/parser": "5.30.5",
+    "del": "7.0.0",
     "eslint": "8.19.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-airbnb-typescript": "17.0.0",
     "eslint-plugin-import": "2.26.0",
+    "gulp": "4.0.2",
+    "gulp-eslint-new": "1.5.1",
+    "gulp-jest": "4.0.4",
+    "gulp-typescript": "6.0.0-alpha.1",
     "husky": "8.0.1",
     "jest": "28.1.2",
     "nodemon": "2.0.19",
@@ -47,7 +54,8 @@
     "supertest": "6.2.4",
     "ts-jest": "28.0.5",
     "ts-node": "10.8.2",
-    "typescript": "4.7.4"
+    "typescript": "4.7.4",
+    "vinyl-paths": "5.0.0"
   },
   "repository": {
     "type": "git",
@@ -79,5 +87,6 @@
   "homepage": "https://github.com/tawn33y/whatsapp-cloud-api#readme",
   "engines": {
     "node": ">=12"
-  }
+  },
+  "type": "module"
 }

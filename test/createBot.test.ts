@@ -1,9 +1,9 @@
-import request from 'supertest';
-import { Server } from 'http';
 import { Application } from 'express';
-import { createBot } from '.';
-import { FreeFormObject } from './utils/misc';
-import { PubSubEvents } from './utils/pubSub';
+import { Server } from 'http';
+import request from 'supertest';
+import { createBot } from '../src';
+import { FreeFormObject } from '../src/utils/misc';
+import { PubSubEvents } from '../src/utils/pubSub';
 
 const expectSendMessageResult = (result: any): void => {
   expect(result && typeof result === 'object').toBe(true);
@@ -65,24 +65,35 @@ describe('send functions', () => {
   });
 
   test('sends document', async () => {
-    const result = await bot.sendDocument(to, 'http://www.africau.edu/images/default/sample.pdf', {
-      caption: 'Random pdf',
-      filename: 'myfile.pdf',
-    });
+    const result = await bot.sendDocument(
+      to,
+      'http://www.africau.edu/images/default/sample.pdf',
+      {
+        caption: 'Random pdf',
+        filename: 'myfile.pdf',
+      },
+    );
 
     expectSendMessageResult(result);
   });
 
   test('sends audio', async () => {
-    const result = await bot.sendAudio(to, 'https://samplelib.com/lib/preview/mp3/sample-3s.mp3');
+    const result = await bot.sendAudio(
+      to,
+      'https://samplelib.com/lib/preview/mp3/sample-3s.mp3',
+    );
 
     expectSendMessageResult(result);
   });
 
   test('sends video', async () => {
-    const result = await bot.sendVideo(to, 'https://samplelib.com/lib/preview/mp4/sample-5s.mp4', {
-      caption: 'Random mp4',
-    });
+    const result = await bot.sendVideo(
+      to,
+      'https://samplelib.com/lib/preview/mp4/sample-5s.mp4',
+      {
+        caption: 'Random mp4',
+      },
+    );
 
     expectSendMessageResult(result);
   });
@@ -97,7 +108,7 @@ describe('send functions', () => {
   });
 
   test('sends location', async () => {
-    const result = await bot.sendLocation(to, 40.7128, -74.0060, {
+    const result = await bot.sendLocation(to, 40.7128, -74.006, {
       name: 'New York',
     });
 
@@ -111,20 +122,26 @@ describe('send functions', () => {
   });
 
   test('sends contacts', async () => {
-    const result = await bot.sendContacts(to, [{
-      name: {
-        formatted_name: 'John Doe',
-        first_name: 'John',
+    const result = await bot.sendContacts(to, [
+      {
+        name: {
+          formatted_name: 'John Doe',
+          first_name: 'John',
+        },
+        phones: [
+          {
+            type: 'HOME',
+            phone: '0712345678',
+          },
+        ],
+        emails: [
+          {
+            type: 'HOME',
+            email: 'random@random.com',
+          },
+        ],
       },
-      phones: [{
-        type: 'HOME',
-        phone: '0712345678',
-      }],
-      emails: [{
-        type: 'HOME',
-        email: 'random@random.com',
-      }],
-    }]);
+    ]);
 
     expectSendMessageResult(result);
   });
@@ -200,24 +217,23 @@ describe('server functions', () => {
     ({ server, app } = await bot.startExpressServer({ webhookVerifyToken }));
   });
 
-  afterAll((): Promise<void> => new Promise((resolve) => {
-    if (!server) {
-      resolve();
-      return;
-    }
+  afterAll(
+    (): Promise<void> => new Promise((resolve) => {
+      if (!server) {
+        resolve();
+        return;
+      }
 
-    server.close(() => {
-      // eslint-disable-next-line
-      console.log('✔️ Server closed');
-      resolve();
-    });
-  }));
+      server.close(() => {
+        // eslint-disable-next-line
+          console.log('✔️ Server closed');
+        resolve();
+      });
+    }),
+  );
 
   test('invalid webhook token', async () => {
-    const sendRequest = (path: string) => request(app)
-      .get(path)
-      .send()
-      .expect(200);
+    const sendRequest = (path: string) => request(app).get(path).send().expect(200);
 
     const paths = [
       webhookPath,
@@ -236,7 +252,11 @@ describe('server functions', () => {
   test('verify webhook token', async () => {
     const challenge = 'random';
     const { text } = await request(app)
-      .get(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
+      .get(
+        `${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(
+          webhookVerifyToken,
+        )}&hub.challenge=${challenge}`,
+      )
       .send()
       .expect(200);
 
@@ -244,10 +264,11 @@ describe('server functions', () => {
   });
 
   test('send invalid body', async () => {
-    const sendRequest = (data: FreeFormObject) => request(app)
-      .post(webhookPath)
-      .send(data)
-      .expect(200);
+    const sendRequest = (data: FreeFormObject) => {
+      // This is an unnecessary comment to stop eslint from formatting the code
+      const req = request(app).post(webhookPath);
+      return req.send(data).expect(200);
+    };
 
     const data = [
       {},
@@ -343,20 +364,26 @@ describe('server functions', () => {
         id: 'wamid.abcd',
         timestamp: '1640995200',
         type: 'contacts',
-        contacts: [{
-          name: {
-            formatted_name: 'John Doe',
-            first_name: 'John',
+        contacts: [
+          {
+            name: {
+              formatted_name: 'John Doe',
+              first_name: 'John',
+            },
+            phones: [
+              {
+                type: 'HOME',
+                phone: '0712345678',
+              },
+            ],
+            emails: [
+              {
+                type: 'HOME',
+                email: 'random@random.com',
+              },
+            ],
           },
-          phones: [{
-            type: 'HOME',
-            phone: '0712345678',
-          }],
-          emails: [{
-            type: 'HOME',
-            email: 'random@random.com',
-          }],
-        }],
+        ],
       },
       {
         from: '12345678',
@@ -507,18 +534,24 @@ describe('server functions', () => {
           .post(webhookPath)
           .send({
             object: 'abcd',
-            entry: [{
-              changes: [{
-                value: {
-                  messages: [payload],
-                  contacts: [{
-                    profile: {
-                      name: getRandomInt(0, 1) ? 'John Doe' : undefined,
+            entry: [
+              {
+                changes: [
+                  {
+                    value: {
+                      messages: [payload],
+                      contacts: [
+                        {
+                          profile: {
+                            name: getRandomInt(0, 1) ? 'John Doe' : undefined,
+                          },
+                        },
+                      ],
                     },
-                  }],
-                },
-              }],
-            }],
+                  },
+                ],
+              },
+            ],
           })
           .expect(200);
       });

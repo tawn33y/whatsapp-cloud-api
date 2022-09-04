@@ -8,10 +8,10 @@
     "build": "gulp build",
     "lint": "gulp lint",
     "ts-check": "gulp compile",
-    "test": "jest --testPathPattern=test",
+    "test": "gulp test",
     "pre-commit-message": "echo 'Please wait, running pre-commit checks...' && exit 0",
     "pre-commit": "gulp build",
-    "prepare": "husky install"
+    "prepare": "[ -d './.husky' ] && husky install"
   },
   "files": [
     "dist",

@@ -1,9 +1,11 @@
+import fs from 'fs';
 import request from 'supertest';
 import { Server } from 'http';
 import { Application } from 'express';
-import { createBot } from '.';
+import { createBot, Message } from '.';
 import { FreeFormObject } from './utils/misc';
 import { PubSubEvents } from './utils/pubSub';
+import { Status } from './createBot.types';
 
 const expectSendMessageResult = (result: any): void => {
   expect(result && typeof result === 'object').toBe(true);
@@ -191,17 +193,24 @@ describe('send functions', () => {
   });
 });
 
+function log(line: string) {
+  fs.appendFileSync('./log.txt', `${line}\n`);
+}
+
 describe('server functions', () => {
   const bot = createBot(fromPhoneNumberId, accessToken, { version });
   let server: Server | undefined;
   let app: Application | undefined;
 
   beforeAll(async () => {
+    log('✔️ Server is Runing');
     ({ server, app } = await bot.startExpressServer({ webhookVerifyToken }));
+    log(JSON.stringify(server?.address()));
   });
 
   afterAll((): Promise<void> => new Promise((resolve) => {
     if (!server) {
+      log('❌ Server Stopped');
       resolve();
       return;
     }
@@ -235,8 +244,11 @@ describe('server functions', () => {
 
   test('verify webhook token', async () => {
     const challenge = 'random';
+    log(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`);
     const { text } = await request(app)
-      .get(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`)
+      .get(`${webhookPath}?hub.mode=subscribe&hub.verify_token=${encodeURIComponent(webhookVerifyToken)}&hub.challenge=${challenge}`, (data) => {
+        log(data);
+      })
       .send()
       .expect(200);
 
@@ -399,14 +411,14 @@ describe('server functions', () => {
 
     // TODO: listen for each event, e.g. bot.on('text', ...)
 
-    bot.on('message', async (message) => {
-      expect(message && typeof message === 'object').toBe(true);
-      expect(message).toHaveProperty('from');
-      expect(message).toHaveProperty('id');
-      expect(message).toHaveProperty('timestamp');
-      expect(message).toHaveProperty('type');
-      expect(message).toHaveProperty('data');
-
+    bot.on('message', async (payload) => {
+      expect(payload && typeof payload === 'object').toBe(true);
+      expect(payload).toHaveProperty('from');
+      expect(payload).toHaveProperty('id');
+      expect(payload).toHaveProperty('timestamp');
+      expect(payload).toHaveProperty('type');
+      expect(payload).toHaveProperty('data');
+      const message: Message = payload as Message;
       expect(typeof message.from).toBe('string');
       expect(typeof message.id).toBe('string');
       expect(typeof message.timestamp).toBe('string');
@@ -524,6 +536,148 @@ describe('server functions', () => {
       });
     } catch (err) {
       reject(err);
+    }
+  }));
+
+  // eslint-disable-next-line no-async-promise-executor, @typescript-eslint/no-unused-vars
+  test('listen for statuses', (): Promise<void> => new Promise(async (resolve, reject) => {
+    const payloads = [
+      {
+        id: 'wamid.abcdef',
+        status: 'failed',
+        timestamp: '123456789',
+        recipient_id: '123456789',
+        errors: [
+          {
+            code: 131047,
+            title:
+              'Message failed to send because more than 24 hours have passed since the customer last replied to this number.',
+            href: 'https://developers.facebook.com/docs/whatsapp/cloud-api/support/error-codes/',
+          },
+        ],
+      },
+      {
+        id: 'wamid.abcdefg',
+        status: 'sent',
+        timestamp: '1666677821',
+        recipient_id: '123456789',
+        conversation: {
+          id: 'aasdf',
+          expiration_timestamp: '1666751460',
+          origin: {
+            type: 'user_initiated',
+          },
+        },
+        pricing: {
+          billable: true,
+          pricing_model: 'CBP',
+          category: 'user_initiated',
+        },
+      },
+      {
+        id: 'wamid.abcdefgh',
+        status: 'delivered',
+        timestamp: '1666677822',
+        recipient_id: '12345',
+        conversation: {
+          id: '7d66bebf4fba8680d9808180c7b0d9e6',
+          origin: {
+            type: 'user_initiated',
+          },
+        },
+        pricing: {
+          billable: true,
+          pricing_model: 'CBP',
+          category: 'user_initiated',
+        },
+      },
+      {
+        id: 'wamid.abcdefghi',
+        status: 'read',
+        timestamp: '1666677867',
+        recipient_id: '123123123123',
+      },
+    ];
+    let i = 0;
+    bot.on('status', async (payload) => {
+      log(JSON.stringify(payload, null, 1));
+      expect(payload && typeof payload === 'object').toBe(true);
+      expect(payload).toHaveProperty('id');
+      expect(payload).toHaveProperty('status');
+      expect(payload).toHaveProperty('timestamp');
+      expect(payload).toHaveProperty('recipient_id');
+      const status: Status = payload as Status;
+      expect(typeof status.id).toBe('string');
+      expect(typeof status.status).toBe('string');
+      expect(typeof status.timestamp).toBe('string');
+      expect(typeof status.recipient_id).toBe('string');
+      expect(Object.values(PubSubEvents)).toContain(status.status);
+      if (status.errors) {
+        status.errors.forEach((e) => {
+          expect(typeof e.title).toBe('string');
+          expect(typeof e.code).toBe('number');
+        });
+      }
+      switch (status.status) {
+        case 'read':
+          expect(status.status).toBe('read');
+          break;
+        case 'sent':
+          expect(status.status).toBe('sent');
+          expect(status).toHaveProperty('conversation');
+          expect(typeof status.conversation!.id).toBe('string');
+          expect(typeof status.conversation!.expiration_timestamp).toBe('string');
+          expect(status.conversation).toHaveProperty('origin');
+          expect(status).toHaveProperty('pricing');
+          expect(typeof status.pricing!.billable).toBe('boolean');
+          expect(typeof status.pricing!.pricing_model).toBe('string');
+          expect(typeof status.pricing!.category).toBe('string');
+          break;
+        case 'delivered':
+          expect(status.status).toBe('delivered');
+          expect(status).toHaveProperty('conversation');
+          expect(typeof status.conversation!.id).toBe('string');
+          expect(status.conversation).toHaveProperty('origin');
+          expect(status).toHaveProperty('pricing');
+          expect(typeof status.pricing!.billable).toBe('boolean');
+          expect(typeof status.pricing!.pricing_model).toBe('string');
+          expect(typeof status.pricing!.category).toBe('string');
+          break;
+        case 'failed':
+          expect(status.status).toBe('failed');
+          expect(status).toHaveProperty('errors');
+          expect(Array.isArray(status.errors)).toBe(true);
+          expect(status.errors?.[0]).toHaveProperty('code');
+          expect(status.errors?.[0]).toHaveProperty('title');
+          expect(typeof status.errors?.[0].code).toBe('number');
+          expect(typeof status.errors?.[0].title).toBe('string');
+          break;
+        default:
+          break;
+      }
+      i += 1;
+      if (i === payloads.length) {
+        resolve();
+      }
+    });
+    try {
+      Object.values(payloads).map(async (payload) => {
+        log(JSON.stringify(payload, null, 1));
+        await request(app)
+          .post(webhookPath)
+          .send({
+            object: 'abcd',
+            entry: [{
+              changes: [{
+                value: {
+                  statuses: [payload],
+                },
+              }],
+            }],
+          }).expect(200);
+      });
+    } catch (error) {
+      reject(error);
     }
   }));
 });

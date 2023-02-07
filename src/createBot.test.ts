@@ -393,6 +393,20 @@ describe('server functions', () => {
           id: 'wamid.abcd',
         },
       },
+      {
+        from: '12345678',
+        id: 'wamid.abcd',
+        timestamp: '1640995200',
+        type: 'button',
+        button: {
+          payload: "No-Button-Payload",
+          text: "No"
+        },
+        context: {
+          from: '12345678',
+          id: 'wamid.abcd',
+        },
+      },
     ];
 
     let i = 0;
@@ -489,7 +503,19 @@ describe('server functions', () => {
           expect(typeof data.context.from).toBe('string');
           expect(typeof data.context.id).toBe('string');
           break;
+        case 'template_button_reply':
+          expect(data).toHaveProperty('payload');
+          expect(data).toHaveProperty('text');
 
+          expect(typeof data.payload).toBe('string');
+          expect(typeof data.text).toBe('string');
+
+          expect(typeof data.context === 'object').toBe(true);
+          expect(data.context).toHaveProperty('from');
+          expect(data.context).toHaveProperty('id');
+
+          expect(typeof data.context.from).toBe('string');
+          expect(typeof data.context.id).toBe('string');
         default:
           break;
       }

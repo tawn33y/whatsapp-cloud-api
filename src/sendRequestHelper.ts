@@ -42,6 +42,7 @@ export const sendRequestHelper = (
       whatsappId: result.contacts?.[0]?.wa_id,
     };
   } catch (err: unknown) {
+    console.log(err);
     if ((err as any).response) {
       throw (err as AxiosError)?.response?.data;
     // } else if ((err as any).request) {

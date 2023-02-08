@@ -1,6 +1,9 @@
 name: "run tests, lint, build"
 
-on: [push]
+on:
+  - push
+  - pull_request:
+      types: [opened, closed, reopened, ready_for_review, review_requested, auto_merge_enabled]
 
 jobs:
   build:

@@ -24,12 +24,9 @@ export const sendRequestHelper = (
   version: string = 'v14.0',
 ) => async <T>(data: T): Promise<SendMessageResult> => {
   try {
-    const url = `https://graph.facebook.com/${version}/${fromPhoneNumberId}/messages`;
-    console.log(url);
-    console.log(data);
     const { data: rawResult } = await axios({
       method: 'post',
-      url,
+      url: `https://graph.facebook.com/${version}/${fromPhoneNumberId}/messages`,
       data,
       headers: {
         Authorization: `Bearer ${accessToken}`,

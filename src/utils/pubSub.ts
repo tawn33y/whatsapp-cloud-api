@@ -10,6 +10,11 @@ export enum PubSubEvents {
   contacts = 'contacts',
   button_reply = 'button_reply',
   list_reply = 'list_reply',
+  status = 'status',
+  read = 'read',
+  delivered = 'delivered',
+  sent = 'sent',
+  failed = 'failed',
 }
 
 export type PubSubEvent = keyof typeof PubSubEvents;

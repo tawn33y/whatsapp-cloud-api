@@ -13,6 +13,30 @@ export interface Message {
   type: PubSubEvent;
   data: FreeFormObject; // TODO: properly define interfaces for each type
 }
+// https://developers.facebook.com/docs/whatsapp/cloud-api/webhooks/components
+export interface Status {
+  id: string;
+  status: 'read' | 'delivered' | 'sent' | 'failed';
+  timestamp: string;
+  recipient_id: string;
+  errors?: { // only in failed
+    code: string,
+    title: string,
+    href: string
+  }[];
+  conversation?: { // only in sent and delivered
+    id: string,
+    expiration_timestamp?: string, // only in delivered
+    origin: {
+      type: 'business_initiated' | 'referral_conversion' | 'customer_initiated'
+    },
+  }
+  pricing?: { // only in sent and delivered
+    billable: boolean,
+    pricing_model: 'CBP',
+    category: 'business_initiated' | 'referral_conversion' | 'customer_initiated'
+  }
+}
 
 export interface Bot {
   startExpressServer: (options?: {
@@ -22,7 +46,7 @@ export interface Bot {
     webhookPath?: string;
     webhookVerifyToken?: string;
   }) => Promise<{ server?: Server; app: Application; }>;
-  on: (event: PubSubEvent, cb: (message: Message) => void) => void;
+  on: (event: PubSubEvent, cb: (message: Message | Status) => void) => void;
 
   sendText: (to: string, text: string, options?: {
     preview_url?: boolean;

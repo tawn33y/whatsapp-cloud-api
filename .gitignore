@@ -110,3 +110,4 @@ config/test.json
 src/config.json
 
 example/
+log.txt

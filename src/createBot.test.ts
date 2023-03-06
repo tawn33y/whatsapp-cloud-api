@@ -399,8 +399,8 @@ describe('server functions', () => {
         timestamp: '1640995200',
         type: 'button',
         button: {
-          payload: "No-Button-Payload",
-          text: "No"
+          payload: 'No-Button-Payload',
+          text: 'No'
         },
         context: {
           from: '12345678',
@@ -516,6 +516,7 @@ describe('server functions', () => {
 
           expect(typeof data.context.from).toBe('string');
           expect(typeof data.context.id).toBe('string');
+          break;
         default:
           break;
       }

@@ -107,7 +107,7 @@ export const startExpressServer = (
         event = PubSubEvents.template_button_reply;
         data = {
           ...(rest.button),
-        }
+        };
         break;
       default:
         break;

@@ -400,7 +400,7 @@ describe('server functions', () => {
         type: 'button',
         button: {
           payload: 'No-Button-Payload',
-          text: 'No'
+          text: 'No',
         },
         context: {
           from: '12345678',

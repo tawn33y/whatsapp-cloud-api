@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.0
+
+- Add option to unsubscribe from a bot listener
+
 ## 0.2.6
 
 - Adds sender `name`. Change added by [@guskuma](https://github.com/guskuma).

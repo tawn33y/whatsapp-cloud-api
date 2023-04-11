@@ -516,6 +516,9 @@ describe('server functions', () => {
                       name: getRandomInt(0, 1) ? 'John Doe' : undefined,
                     },
                   }],
+                  metadata: {
+                    phone_number_id: fromPhoneNumberId,
+                  }
                 },
               }],
             }],

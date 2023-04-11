@@ -38,8 +38,10 @@ export const createBot: ICreateBot = (fromPhoneNumberId, accessToken, opts) => {
       return expressServer;
     },
     on: (event, cb) => {
-      PubSub.subscribe(event, (_, data) => cb(data));
+      const token = PubSub.subscribe(`bot-${fromPhoneNumberId}-${event}`, (_, data) => cb(data));
+      return token;
     },
+    unsubscribe: (token) => PubSub.unsubscribe(token),
 
     sendText: (to, text, options) => sendRequest<TextMessage>({
       ...payloadBase,

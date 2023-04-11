@@ -1,0 +1,12 @@
+{
+  "name": "playground",
+  "version": "0.1.0",
+  "scripts": {
+    "start": "nodemon ./src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.22",
+    "whatsapp-cloud-api": "^0.2.6"
+  }
+}

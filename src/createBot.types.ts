@@ -22,7 +22,8 @@ export interface Bot {
     webhookPath?: string;
     webhookVerifyToken?: string;
   }) => Promise<{ server?: Server; app: Application; }>;
-  on: (event: PubSubEvent, cb: (message: Message) => void) => void;
+  on: (event: PubSubEvent, cb: (message: Message) => void) => string;
+  unsubscribe: (token: string) => string | boolean;
 
   sendText: (to: string, text: string, options?: {
     preview_url?: boolean;

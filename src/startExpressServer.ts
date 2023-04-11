@@ -76,6 +76,7 @@ export const startExpressServer = (
       type,
       ...rest
     } = req.body.entry[0].changes[0].value.messages[0];
+    const fromPhoneNumberId = req.body.entry[0].changes[0].value.metadata.phone_number_id;
 
     let event: PubSubEvent | undefined;
     let data: FreeFormObject | undefined;
@@ -127,7 +128,10 @@ export const startExpressServer = (
         data,
       };
 
-      ['message', event].forEach((e) => PubSub.publish(e, payload));
+      [
+        `bot-${fromPhoneNumberId}-message`,
+        `bot-${fromPhoneNumberId}-${event}`,
+      ].forEach((e) => PubSub.publish(e, payload));
     }
 
     res.sendStatus(200);

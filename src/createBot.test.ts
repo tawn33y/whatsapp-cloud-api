@@ -518,7 +518,7 @@ describe('server functions', () => {
                   }],
                   metadata: {
                     phone_number_id: fromPhoneNumberId,
-                  }
+                  },
                 },
               }],
             }],

@@ -22,11 +22,16 @@ const { createBot } = require('whatsapp-cloud-api');
       webhookVerifyToken,
     });
 
-    bot.on('message', async (msg) => {
+    const subscriptionToken = bot.on('message', async (msg) => {
       console.log(msg);
 
       await bot.sendText(msg.from, 'Received your message!');
     });
+
+    setTimeout(() => {
+      bot.unsubscribe(subscriptionToken);
+      console.log(`Unsubcribed`);
+    }, 15e3);
   } catch (err) {
     console.log(err);
   }

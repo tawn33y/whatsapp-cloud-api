@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.1
+
+Fix README.md 404 error
+
 ## 0.3.0
 
 - Add option to unsubscribe from a bot listener

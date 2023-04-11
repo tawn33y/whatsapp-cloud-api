@@ -1,31 +1,18 @@
 # Updating npm version & publishing
 
-## Local test
+## Local build test
 
 ```sh
 # Update package.json
-# Update changelog
+# Update CHANGELOG.md
 
-npm i
-wca_build=$(npm pack)
-mkdir playground
-mv $wca_build playground
-cd playground
-npm init -y
-npm i ./$wca_build
+# Follow instructions in ./playground/README.md to run locally
 
-# ensure installs OK
-
-mkdir src
-touch src/index.js
-
-# update index.js/package.json
-
-npm start
+rm $wca_build
+# revert package*.json
 
 cd ..
-rm -r ./playground
-rm $wca_build
+npm t
 ```
 
 ## Publish

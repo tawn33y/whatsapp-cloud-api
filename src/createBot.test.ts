@@ -26,16 +26,16 @@ const getRandomInt = (_min: number, _max: number): number => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-const {
-  env: {
-    FROM_PHONE_NUMBER_ID: fromPhoneNumberId = '',
-    ACCESS_TOKEN: accessToken = '',
-    VERSION: version = '',
-    TO: to = '',
-    WEBHOOK_VERIFY_TOKEN: webhookVerifyToken = '',
-    WEBHOOK_PATH: webhookPath = '',
-  },
-} = process;
+const fromPhoneNumberId = process.env.FROM_PHONE_NUMBER_ID;
+const accessToken = process.env.ACCESS_TOKEN;
+const version = process.env.VERSION;
+const to = process.env.TO;
+const webhookVerifyToken = process.env.WEBHOOK_VERIFY_TOKEN;
+const webhookPath = process.env.WEBHOOK_PATH;
+
+if (!fromPhoneNumberId || !accessToken || !to || !webhookVerifyToken || !webhookPath) {
+  throw new Error('Missing env variables');
+}
 
 describe('send functions', () => {
   const bot = createBot(fromPhoneNumberId, accessToken, { version });

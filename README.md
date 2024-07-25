@@ -10,9 +10,13 @@ Contains built-in Typescript declarations.
 ![npm bundle size](https://img.shields.io/bundlephobia/min/whatsapp-cloud-api)
 ![npm](https://img.shields.io/npm/dw/whatsapp-cloud-api)
 
+<hr >
+
 ## ℹ️ Status
 
 This project is now **Archived**. Please [read more here](https://github.com/tawn33y/whatsapp-cloud-api/issues/65).
+
+<hr>
 
 ## Install
 
